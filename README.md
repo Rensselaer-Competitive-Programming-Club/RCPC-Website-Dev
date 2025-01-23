@@ -10,3 +10,4 @@ This is the RCPC Website codebase, a S25 RCOS project using MERN. See our websit
 - Matt Partridge
 - Jacob Lleonart
 - CJ Marino
+- Heman Kolla
