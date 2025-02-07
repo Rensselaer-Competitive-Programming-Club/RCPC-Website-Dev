@@ -6,7 +6,12 @@
     --white-color: #FCFCFC;     /* White */
 }
 
-body {
+header, footer {
+    background-color: var(--dark-color);
+    color: var(--white-color);
+}
+
+main {
     background-color: var(--light-color);
     color: var(--black-color);
 }
