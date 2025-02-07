@@ -1,0 +1,16 @@
+header, main, footer {
+    width: 100%;
+    /* padding: 20px; */
+}
+
+header {
+    height: 10%;
+}
+
+main {
+    min-height: 65%;
+}
+
+footer {
+    height: 25%;
+}

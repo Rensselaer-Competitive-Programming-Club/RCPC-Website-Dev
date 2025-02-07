@@ -1,0 +1,32 @@
+/* For Header */
+
+header {
+    display: flex;
+    justify-content: space-between;
+
+    align-items: center;
+}
+
+header img, header nav {
+    padding: 30px;
+}
+
+header img {
+    max-height: 50px;
+    width: auto;
+}
+
+nav {
+    display: flex;
+    gap: 20px;
+}
+
+nav a {
+    color: var(--white-color);
+
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+/* For Footer */
