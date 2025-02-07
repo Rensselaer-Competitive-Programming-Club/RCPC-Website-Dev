@@ -1,0 +1,12 @@
+:root {
+    --accent-color: #D6001C;   /* Fire Engine Red */
+    --light-color: #D7D9B1; /* Vanilla */
+    --dark-color: #756D54;    /* Coyote */
+    --black-color: #3C0000;      /* Black Bean */
+    --white-color: #FCFCFC;     /* White */
+}
+
+body {
+    background-color: var(--light-color);
+    color: var(--black-color);
+}
