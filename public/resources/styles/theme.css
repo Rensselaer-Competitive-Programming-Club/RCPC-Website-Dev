@@ -1,10 +1,4 @@
 :root {
-    /* Palette */
-    --primary-color: #FCFCFC;   /* use for majority of website color */
-    --secondary-color: #3C0000; /* use for text, button */
-    /* use accent color for emphasis/logo/hover */
-
-    /* Full Palette */
     --accent-color: #D6001C;    /* Fire Engine Red */
     --light-color: #D7D9B1;     /* Vanilla */
     --dark-color: #756D54;      /* Coyote */
