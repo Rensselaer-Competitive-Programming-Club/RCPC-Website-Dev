@@ -6,11 +6,28 @@
     --white-color: #FCFCFC;     /* White; used as primary color */
 }
 
+
+
+/* 
+**********************************************
+*                   HEADER                   *
+**********************************************
+*/
+
+/* 
+    - fix the size of the header s.t. window resizing doesn't cut off logo or pag nav.
+    - nav items should be center with flex; current issue, flex doesn't work as intended
+*/
+
 header {
     background-color: var(--white-color);
     color: var(--black-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
+/* Nav Item Color and Hover Color */
 header nav a {
     color: var(--black-color);
 }
@@ -19,12 +36,31 @@ header nav a:hover {
     color: var(--accent-color);
 }
 
-footer {
-    background-color: var(--black-color);
-    color: var(--white-color);
-}
 
+
+/* 
+**********************************************
+*                    MAIN                    *
+**********************************************
+*/
 main {
     background-color: var(--white-color);
     color: var(--black-color);
+}
+
+
+
+/* 
+**********************************************
+*                   FOOTER                   *
+**********************************************
+*/
+
+/*
+    - Flexbox row
+*/
+
+footer {
+    background-color: var(--black-color);
+    color: var(--white-color);
 }
