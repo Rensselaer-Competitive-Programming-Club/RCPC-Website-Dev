@@ -1,5 +1,5 @@
 /*flexbox that holds the card containers*/
-.meet-the-team {
+.card-container-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -9,6 +9,7 @@
 .card-container {
     display: flex;
     flex-direction: row;                    /*elements stack horizontally*/
+    flex-wrap: wrap;
     justify-content: space-around;          /*evenly spaces cards wrt main axis (determined by flex-direction; row makes main axis x, col makes main axis y)*/
 }
 
@@ -16,14 +17,14 @@
 .card {
     display: flex;                      
     flex-direction: column;                 /*photo and text fields are stacked vertically*/
-    justify-content: space-around;          /*photo and text fields are evenly spaced between; top and bottom are each 1/2 in between space*/
+    justify-content: center;                /*photo and text fields are evenly spaced between; top and bottom are each 1/2 in between space*/
     background-color: bisque;             /*sets the background color; will be modified in the future*/        
 }
 
 /*image frame*/
 .card > img {
-    width: 100px;                           /*width and height fix image size*/
-    height: 100px;                          
+    width: 200px;                           /*width and height fix image size*/
+    height: 200px;                          
     border-radius: 50%;                     /*gives rounded corners*/
     object-fit: cover;                      /*makes sure image fills space*/
 }
