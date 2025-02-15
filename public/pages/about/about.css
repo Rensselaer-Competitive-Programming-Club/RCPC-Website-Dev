@@ -1,0 +1,40 @@
+/*flexbox that holds the card containers*/
+.meet-the-team {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/*flexbox that holds a row of cards */
+.card-container {
+    display: flex;
+    flex-direction: row;                    /*elements stack horizontally*/
+    justify-content: space-around;          /*evenly spaces cards wrt main axis (determined by flex-direction; row makes main axis x, col makes main axis y)*/
+}
+
+/*flexbox that holds image name role*/
+.card {
+    display: flex;                      
+    flex-direction: column;                 /*photo and text fields are stacked vertically*/
+    justify-content: space-around;          /*photo and text fields are evenly spaced between; top and bottom are each 1/2 in between space*/
+    background-color: bisque;             /*sets the background color; will be modified in the future*/        
+}
+
+/*image frame*/
+.card > img {
+    width: 100px;                           /*width and height fix image size*/
+    height: 100px;                          
+    border-radius: 50%;                     /*gives rounded corners*/
+    object-fit: cover;                      /*makes sure image fills space*/
+}
+
+/*name text*/
+.card > h2 {
+    font-weight: bold;                      /*makes it pop a bit*/
+}
+
+/*title text*/
+.card > h4 {
+    font-weight: normal;                    /*standard*/
+}
+
