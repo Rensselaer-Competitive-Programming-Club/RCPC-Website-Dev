@@ -1,9 +1,9 @@
 :root {
-    --accent-color: #D6001C;   /* Fire Engine Red */
-    --light-color: #D7D9B1; /* Vanilla */
-    --dark-color: #756D54;    /* Coyote */
-    --black-color: #3C0000;      /* Black Bean */
-    --white-color: #FCFCFC;     /* White */
+    --accent-color: #D6001C;    /* Fire Engine Red; used as accent */
+    --light-color: #D7D9B1;     /* Vanilla */
+    --dark-color: #756D54;      /* Coyote */
+    --black-color: #3C0000;     /* Black Bean; used as secondary color */
+    --white-color: #FCFCFC;     /* White; used as primary color */
 }
 
 header {
@@ -11,12 +11,12 @@ header {
     color: var(--black-color);
 }
 
-header nav {
-    
-}
-
 header nav a {
     color: var(--black-color);
+}
+
+header nav a:hover {
+    color: var(--accent-color);
 }
 
 footer {
