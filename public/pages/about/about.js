@@ -8,7 +8,8 @@ function Card({src, name, title}) {
     </div >
 }
 
-function Team() {
+function MeetTheTeam() {
+    
 
     var imagePath = "/resources/images/people/";
 
@@ -24,14 +25,31 @@ function Team() {
         { src: imagePath + "hebbej.png", name: "Jacob Hebbel", title: "Director of Technology" }
     ];
 
-    return (
-        <div className="card-container">
-            {members.map((member, index) => (
-                <Card key={index} {...member} />
+    const rows = [];
+    for (let i = 0; i < members.length; i += 3) {
+        rows.push(members.slice(i, i + 3));
+    }
+    
 
-            ))}
-        </div>
-    );
+    return <div className="card-container-container"> 
+        {rows.map((row, rowIndex) => (
+            <div key={rowIndex} className="card-container">
+                {row.map((member, memberIndex) => (
+                    <Card key={memberIndex} {...member} />
+                ))}
+            </div>
+        ))}
+    </div>
 }
 
-ReactDOM.createRoot(document.getElementById("card-container"))?.render(React.createElement(Team));
+function Main() {
+    return <main>
+        <section class="about-text"></section>
+
+        <section class="meet-the-team">
+            <MeetTheTeam />
+        </section>
+    </main>
+}
+
+ReactDOM.createRoot(document.querySelector("main"))?.render(<Main />);
