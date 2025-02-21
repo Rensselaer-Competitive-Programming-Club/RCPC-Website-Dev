@@ -1,0 +1,13 @@
+.problem-body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: #000;
+}
+
+.problem-box {
+    width: 500px;
+    height: 500px;
+}
