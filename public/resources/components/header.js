@@ -3,7 +3,7 @@
 function Header() {
     return (
         <header>
-            <a href="/"><img src="/resources/rcpc_white.png" alt="&gt;_RCPC"></img></a>
+            <a href="/"><img src="/resources/rcpc_black.png" alt="&gt;_RCPC"></img></a>
 
             <nav>
                 <a href="/pages/events/events.html">Events</a>
