@@ -11,3 +11,4 @@ This is the RCPC Website codebase, a S25 RCOS project using MERN. See our websit
 - Jacob Lleonart
 - CJ Marino
 - Heman Kolla
+- Jackson Baimel
