@@ -1,4 +1,9 @@
 :root {
+    /* Palette */
+    --primary-color: #FCFCFC;   /* use for majority of website color */
+    --secondary-color: #3C0000; /* use for text, button */
+
+    /* Full Palette */
     --accent-color: #D6001C;    /* Fire Engine Red */
     --light-color: #D7D9B1;     /* Vanilla */
     --dark-color: #756D54;      /* Coyote */
@@ -6,12 +11,25 @@
     --white-color: #FCFCFC;     /* White */
 }
 
-header, footer {
-    background-color: var(--dark-color);
-    color: var(--white-color);
+header {
+    background-color: var(--white-color);
+    color: var(--black-color);
+}
+
+header nav a {
+    color: var(--black-color);
+}
+
+header nav a:hover {
+    color: var(--accent-color);
 }
 
 main {
-    background-color: var(--light-color);
+    background-color: var(--white-color);
     color: var(--black-color);
+}
+
+footer {
+    background-color: var(--black-color);
+    color: var(--white-color);
 }
