@@ -1,7 +1,7 @@
 'use strict';
 
 function Card({src, name, title}) {
-    return <div class="card">
+    return <div className="card">
         <img src={src} alt={name}/>
         <h2>{name}</h2>
         <h4>{title}</h4>
@@ -24,29 +24,33 @@ function MeetTheTeam() {
         { src: imagePath + "lleonj.png", name: "Jacob Lleonart", title: "Director of Marketing" },
         { src: imagePath + "hebbej.png", name: "Jacob Hebbel", title: "Director of Technology" }
     ];
-
-    const rows = [];
-    for (let i = 0; i < members.length; i += 3) {
-        rows.push(members.slice(i, i + 3));
-    }
     
+    var president = [members[0]];
+    var vps = [members[1], members[2]];
+    var directors = [members[3], members[4], members[5], members[6], members[7], members[8]];
 
     return <div className="card-container-container"> 
-        {rows.map((row, rowIndex) => (
-            <div key={rowIndex} className="card-container">
-                {row.map((member, memberIndex) => (
-                    <Card key={memberIndex} {...member} />
-                ))}
-            </div>
-        ))}
+        <div className="card-container">
+            {president.map((person, index) => (
+                <Card key={index} {...person} />
+            ))}
+        </div>
+        <div className="card-container">
+            {vps.map((person, index) => (
+                <Card key={index + 1} {...person} />
+            ))}
+        </div>
+        <div className="card-container">
+            {directors.map((person, index) => (
+                <Card key={index + 3} {...person} />
+            ))}
+        </div>
     </div>
 }
 
 function Main() {
     return <main>
-        <section class="about-text"></section>
-
-        <section class="meet-the-team">
+        <section className="meet-the-team">
             <MeetTheTeam />
         </section>
     </main>

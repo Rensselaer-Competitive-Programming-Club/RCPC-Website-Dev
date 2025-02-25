@@ -1,34 +1,33 @@
-/*flexbox that holds the card containers*/
 .card-container-container {
-    
-
-    background-color: black;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    justify-content: space-between;
     gap: 50px;
+    padding: 50px;
 }
 
-/*flexbox that holds a row of cards */
+/*flexbox that holds the cards*/
 .card-container {
     display: flex;
-    flex-direction: row;                    /*elements stack horizontally*/
-    justify-content: space-around;          /*evenly spaces cards wrt main axis (determined by flex-direction; row makes main axis x, col makes main axis y)*/
-    gap: 50px;
+    flex-direction: row;
+    justify-content: space-around;
+    gap: 20px;
 }
 
 /*flexbox that holds image name role*/
 .card {
     display: flex;                      
-    flex-direction: column;                 /*photo and text fields are stacked vertically*/
-    align-items: center;                    /*photo and text fields are evenly spaced between; top and bottom are each 1/2 in between space*/
-    background-color: bisque;             /*sets the background color; will be modified in the future*/        
+    flex-direction: column;                 
+    align-items: center;                    
+    background-color: bisque;             
+    border-radius: 20%;
+    width: 200px;
 }
 
 /*image frame*/
 .card > img {
-    width: 200px;                           /*width and height fix image size*/
-    height: 200px;                          
+    width: 120px;                           /*width and height fix image size*/
+    height: 120px;                          
     border-radius: 50%;                     /*gives rounded corners*/
     object-fit: cover;                      /*makes sure image fills space*/
 }
