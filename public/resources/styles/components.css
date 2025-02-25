@@ -3,7 +3,8 @@
 header {
     display: flex;
     justify-content: space-between;
-
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
+    min-height: min-content;
     align-items: center;
 }
 
