@@ -4,6 +4,17 @@
     justify-content: space-between;
     gap: 50px;
     padding: 50px;
+    width: 75%;
+
+    margin: 50px auto;
+
+    border-top: 10px solid var(--black-color);
+    border-bottom: 10px solid var(--black-color);
+    
+    border-top-left-radius: 1%;
+    border-top-right-radius: 10%;
+    border-bottom-left-radius: 10%;
+    border-bottom-right-radius: 1%;
 }
 
 /*flexbox that holds the cards*/
@@ -12,16 +23,20 @@
     flex-direction: row;
     justify-content: space-around;
     gap: 20px;
+
+    border-left-width: 5px;
 }
 
 /*flexbox that holds image name role*/
 .card {
     display: flex;                      
     flex-direction: column;                 
-    align-items: center;                    
-    background-color: bisque;             
-    border-radius: 20%;
+    align-items: center;
+    background-color: var(--black-color);             
+    border-radius: 25%;
     width: 200px;
+    padding: 80px 25px 80px 25px;
+    color: var(--white-color);
 }
 
 /*image frame*/
