@@ -1,5 +1,11 @@
 'use strict';
 
+function TeamHeader() {
+    return <div className="TeamHeader">
+        <h2>Meet the Team</h2>
+    </div>
+}
+
 function Card({src, name, title}) {
     return <div className="card">
         <img src={src} alt={name}/>
@@ -10,7 +16,6 @@ function Card({src, name, title}) {
 
 function MeetTheTeam() {
     
-
     var imagePath = "/resources/images/people/";
 
     const members = [
@@ -25,23 +30,29 @@ function MeetTheTeam() {
         { src: imagePath + "hebbej.png", name: "Jacob Hebbel", title: "Director of Technology" }
     ];
     
-    var president = [members[0]];
-    var vps = [members[1], members[2]];
-    var directors = [members[3], members[4], members[5], members[6], members[7], members[8]];
+    var presidents = [members[1], members[0], members[2]];
+    var directors1 = [members[3], members[4], members[5]];
+    var directors2 = [members[6], members[7], members[8]];
 
     return <div className="card-container-container"> 
+        
+        {/*inserts presidents items into page*/}
         <div className="card-container">
-            {president.map((person, index) => (
+            {presidents.map((person, index) => (
                 <Card key={index} {...person} />
             ))}
         </div>
+
+        {/*inserts directors1 items into page*/}
         <div className="card-container">
-            {vps.map((person, index) => (
-                <Card key={index + 1} {...person} />
+            {directors1.map((person, index) => (
+                <Card key={index + 3} {...person} />
             ))}
         </div>
+
+        {/*inserts directors2 items into page*/}
         <div className="card-container">
-            {directors.map((person, index) => (
+            {directors2.map((person, index) => (
                 <Card key={index + 3} {...person} />
             ))}
         </div>
