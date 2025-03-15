@@ -62,6 +62,7 @@ function MeetTheTeam() {
 function Main() {
     return <main>
         <section className="meet-the-team">
+            <TeamHeader />
             <MeetTheTeam />
         </section>
     </main>
