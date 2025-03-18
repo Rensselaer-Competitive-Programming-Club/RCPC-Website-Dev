@@ -10,29 +10,37 @@ let problems = [
         name: "Problem 2",
         description: "Problem 2 Description",
         rating: "1200"
+    },
+    {
+        name: "Problem 3",
+        description: "Problem 3 Description",
+        rating: "900"
     }
 ]
 
-let selectedProblem = "t";
-
-function onProblemButtonClick(description) {
-    selectedProblem = description;
-    renderApp();
-}
-
 function ProblemBody() {
-
-
+    const [ problemDescription, setProblemDescription ] = React.useState("");
     return (
         <main className="problem-body">
             <div className="problem-buttons">
                 {problems.map((problem, index) => (
-                    <button className="problem-button" key={index} onClick={() => onProblemButtonClick(problem.description)}>
-                        {problem.name}
+                    <button className="problem-button" key={index} onClick={() => setProblemDescription(problem.description)}>
+                        {problem.name} <br/><br/> Rating - {problem.rating}
                     </button>
                 ))}
             </div>
-            <textarea className="problem-box" value={selectedProblem} readOnly></textarea>
+            <div className="problem-description-div">
+                <h1 className="problem-description-header">Problem Description</h1>
+                <textarea className="problem-description-ta" value={problemDescription} readOnly></textarea>
+            </div>
+            <div className="problem-inputs-div">
+                <h1 className="problem-inputs-header">Problem Inputs</h1>
+                <textarea className="problem-inputs-ta"></textarea>
+                <div className="problem-inputs-buttons">
+                    <button>Input 1</button>
+                    <button>Input 2</button>
+                </div>
+            </div>
         </main>
     );
 }
