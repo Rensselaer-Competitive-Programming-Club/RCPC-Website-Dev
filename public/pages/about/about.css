@@ -1,0 +1,95 @@
+.about-textbox {
+    display: flex;
+    flex-direction: row;
+    border-color: aqua;
+}
+
+.large-text {
+    display: flex;
+    flex-grow: 2;
+    min-width: 80px;
+    min-height: 80px;
+}
+.paragraph {
+    display: flex;
+    min-width: 80px;
+    min-height: 80px;
+}
+
+.card-container-title {
+    display: flex;
+    justify-content: center;
+    padding: 50px 0 20px 0;
+}
+
+.card-container-title > h1 {
+    font-size: xx-large;
+    font-family: sans-serif;
+    font-weight: bolder;
+}
+
+.card-container-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 50px;
+    padding: 50px;
+    width: 75%;
+
+    margin: 50px auto;
+
+    border-top: 10px solid var(--black-color);
+    border-bottom: 10px solid var(--black-color);
+    
+    border-top-left-radius: 1%;
+    border-top-right-radius: 10%;
+    border-bottom-left-radius: 10%;
+    border-bottom-right-radius: 1%;
+}
+
+/*flexbox that holds the cards*/
+.card-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    gap: 20px;
+
+    border-left-width: 5px;
+}
+
+/*flexbox that holds image name role*/
+.card {
+    display: flex;                      
+    flex-direction: column;                 
+    align-items: center;
+    background-color: var(--black-color);             
+    border-radius: 25%;
+    width: 200px;
+    padding: 80px 25px 80px 25px;
+    color: var(--white-color);
+
+    font-family: sans-serif;
+}
+
+/*image frame*/
+.card > img {
+    width: 120px;                           /*width and height fix image size*/
+    height: 120px;                          
+    border-radius: 50%;                     /*gives rounded corners*/
+    object-fit: cover;                      /*makes sure image fills space*/
+}
+
+/*name text*/
+.card > h2 {
+    font-weight: bold;
+    text-align: center;                     /* Centers the text */
+    word-wrap: break-word;                  /* Breaks long words if needed */
+    overflow-wrap: break-word;              /* Ensures proper breaking */
+    max-width: 100%;                        /* Prevents overflow */
+}
+
+/*title text*/
+.card > h4 {
+    font-weight: normal;                    /*standard*/;
+}
+
