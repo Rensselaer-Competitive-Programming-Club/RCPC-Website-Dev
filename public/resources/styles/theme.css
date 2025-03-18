@@ -9,6 +9,7 @@
     --dark-color: #756D54;      /* Coyote */
     --black-color: #3C0000;     /* Black Bean */
     --white-color: #FCFCFC;     /* White */
+    --fontA: myFirstFont;
 }
 
 @font-face {

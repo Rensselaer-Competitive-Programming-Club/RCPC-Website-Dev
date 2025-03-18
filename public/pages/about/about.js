@@ -1,8 +1,23 @@
 'use strict';
 
+function Paragraph() {
+    return <div className="paragraph">hi</div>
+}
+
+function LargeText() {
+    return <div className="large-text">hello</div>
+}
+
+function AboutText() {
+    return <div className="about-textbox">
+        <Paragraph />
+        <LargeText />
+    </div>
+}
+
 function TeamHeader() {
-    return <div className="TeamHeader">
-        <h2>Meet the Team</h2>
+    return <div className="card-container-title">
+        <h1>Meet the Team</h1>
     </div>
 }
 
@@ -60,12 +75,11 @@ function MeetTheTeam() {
 }
 
 function Main() {
-    return <main>
-        <section className="meet-the-team">
-            <TeamHeader />
-            <MeetTheTeam />
-        </section>
-    </main>
+    return <section className="meet-the-team">
+        <AboutText />
+        <TeamHeader />
+        <MeetTheTeam />
+    </section>
 }
 
 ReactDOM.createRoot(document.querySelector("main"))?.render(<Main />);

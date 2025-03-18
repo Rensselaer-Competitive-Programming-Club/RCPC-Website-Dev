@@ -1,8 +1,31 @@
-
-.card-title-container {
+.about-textbox {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    border-color: aqua;
+}
 
+.large-text {
+    display: flex;
+    flex-grow: 2;
+    min-width: 80px;
+    min-height: 80px;
+}
+.paragraph {
+    display: flex;
+    min-width: 80px;
+    min-height: 80px;
+}
+
+.card-container-title {
+    display: flex;
+    justify-content: center;
+    padding: 50px 0 20px 0;
+}
+
+.card-container-title > h1 {
+    font-size: xx-large;
+    font-family: sans-serif;
+    font-weight: bolder;
 }
 
 .card-container-container {
@@ -44,6 +67,8 @@
     width: 200px;
     padding: 80px 25px 80px 25px;
     color: var(--white-color);
+
+    font-family: sans-serif;
 }
 
 /*image frame*/
@@ -56,11 +81,15 @@
 
 /*name text*/
 .card > h2 {
-    font-weight: bold;                      /*makes it pop a bit*/
+    font-weight: bold;
+    text-align: center;                     /* Centers the text */
+    word-wrap: break-word;                  /* Breaks long words if needed */
+    overflow-wrap: break-word;              /* Ensures proper breaking */
+    max-width: 100%;                        /* Prevents overflow */
 }
 
 /*title text*/
 .card > h4 {
-    font-weight: normal;                    /*standard*/
+    font-weight: normal;                    /*standard*/;
 }
 
