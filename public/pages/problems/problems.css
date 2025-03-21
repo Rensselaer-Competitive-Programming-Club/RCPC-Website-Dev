@@ -35,7 +35,7 @@
 
 }
 
-.problem-description-ta {
+.problem-description-text {
     height: 400px;
     width: 600px;
     resize: none;
@@ -48,12 +48,13 @@
     gap: 16px;
 }
 
-.problem-examples-ta {
+.problem-examples-text {
     height: 400px;
     width: 600px;
     resize: none;
     border: none;
     resize: none;
+    overflow: auto;
 }
 
 .problem-examples-buttons {
@@ -62,6 +63,7 @@
     justify-content: space-between;
     align-items: flex-start;
 }
+
 
 .vertical-line {
     width: 3px;

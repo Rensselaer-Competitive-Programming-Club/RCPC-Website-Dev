@@ -3,37 +3,37 @@
 let problems = [
     {
         name: "Problem 1",
-        description: "Problem 1 Description",
         rating: "1900",
-        input: [
-
-        ],
-        output: [
-
+        description: "<b>Problem 1</b> Description",
+        inputDescription: "",
+        outputDescription: "",
+        examples: [
+            {
+                input: "input data",
+                output: "output data"
+            },
+            {
+                input: "input data 2",
+                output: "output data 2"
+            },
+            {
+                input: "input data 2",
+                output: "output data 2"
+            },
+            {
+                input: "input data 2",
+                output: "output data 2"
+            },
+            {
+                input: "input data 2",
+                output: "output data 2"
+            },
+            {
+                input: "input data 2",
+                output: "output data 2"
+            }
         ]
     },
-    {
-        name: "Problem 2",
-        description: "Problem 2 Description",
-        rating: "1200",
-        input: [
-
-        ],
-        output: [
-
-        ]
-    },
-    {
-        name: "Problem 3",
-        description: "Problem 3 Description",
-        rating: "900",
-        input: [
-            
-        ],
-        output: [
-
-        ]
-    }
 ]
 
 function VerticalLine() {
@@ -43,12 +43,12 @@ function VerticalLine() {
 }
 
 function ProblemBody() {
-    const [ problemDescription, setProblemDescription ] = React.useState("");
+    const [ selectedProblem, setSelectedProblem ] = React.useState(0);
     return (
         <main className="problem-body">
             <div className="problem-buttons">
                 {problems.map((problem, index) => (
-                    <button className="problem-button" key={index} onClick={() => setProblemDescription(problem.description)}>
+                    <button className="problem-button" key={index} onClick={() => { setSelectedProblem(index); }}>
                         {problem.name} <br/><br/> Rating - {problem.rating}
                     </button>
                 ))}
@@ -56,12 +56,22 @@ function ProblemBody() {
             <VerticalLine></VerticalLine>
             <div className="problem-description-div">
                 <h1 className="problem-description-header">Problem Description</h1>
-                <textarea className="problem-description-ta" value={problemDescription} readOnly ></textarea>
+                <div className="problem-description-text" readOnly dangerouslySetInnerHTML={{__html: problems[selectedProblem].description }} />
             </div>
             <VerticalLine></VerticalLine>
             <div className="problem-examples-div">
                 <h1 className="problem-examples-header">Problem Examples</h1>
-                <textarea className="problem-examples-ta" readOnly></textarea>
+                <div className="problem-examples-text" readOnly>
+                    {problems[selectedProblem].examples.map((example, index) => (
+                        <div readOnly>
+                            <b>Input {index + 1}</b> <br />
+                            {example.input}<br />
+                            <b>Output {index + 1}</b> <br />
+                            {example.output}<br />
+                            <br />
+                        </div>
+                    ))}
+                </div>
             </div>
         </main>
     );
