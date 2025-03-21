@@ -4,19 +4,43 @@ let problems = [
     {
         name: "Problem 1",
         description: "Problem 1 Description",
-        rating: "1900"
+        rating: "1900",
+        input: [
+
+        ],
+        output: [
+
+        ]
     },
     {
         name: "Problem 2",
         description: "Problem 2 Description",
-        rating: "1200"
+        rating: "1200",
+        input: [
+
+        ],
+        output: [
+
+        ]
     },
     {
         name: "Problem 3",
         description: "Problem 3 Description",
-        rating: "900"
+        rating: "900",
+        input: [
+            
+        ],
+        output: [
+
+        ]
     }
 ]
+
+function VerticalLine() {
+    return (
+        <div className="vertical-line"></div>
+    );
+}
 
 function ProblemBody() {
     const [ problemDescription, setProblemDescription ] = React.useState("");
@@ -29,17 +53,15 @@ function ProblemBody() {
                     </button>
                 ))}
             </div>
+            <VerticalLine></VerticalLine>
             <div className="problem-description-div">
                 <h1 className="problem-description-header">Problem Description</h1>
-                <textarea className="problem-description-ta" value={problemDescription} readOnly></textarea>
+                <textarea className="problem-description-ta" value={problemDescription} readOnly ></textarea>
             </div>
-            <div className="problem-inputs-div">
-                <h1 className="problem-inputs-header">Problem Inputs</h1>
-                <textarea className="problem-inputs-ta"></textarea>
-                <div className="problem-inputs-buttons">
-                    <button>Input 1</button>
-                    <button>Input 2</button>
-                </div>
+            <VerticalLine></VerticalLine>
+            <div className="problem-examples-div">
+                <h1 className="problem-examples-header">Problem Examples</h1>
+                <textarea className="problem-examples-ta" readOnly></textarea>
             </div>
         </main>
     );
