@@ -1,26 +1,13 @@
 'use strict';
 
-function Paragraph() {
-    return <div className="paragraph">hi</div>
-}
-
-function LargeText() {
-    return <div className="large-text">hello</div>
-}
-
-function AboutText() {
-    return <div className="about-textbox">
-        <Paragraph />
-        <LargeText />
-    </div>
-}
-
+/*makes the text that says "Meet the Team"*/
 function TeamHeader() {
     return <div className="card-container-title">
         <h1>Meet the Team</h1>
     </div>
 }
 
+/*card is composed of an image, name, and title*/
 function Card({src, name, title}) {
     return <div className="card">
         <img src={src} alt={name}/>
@@ -29,6 +16,8 @@ function Card({src, name, title}) {
     </div >
 }
 
+/*generates a card component for every name in the json*/
+/*in the future, data should be fetched from db*/
 function MeetTheTeam() {
     
     var imagePath = "/resources/images/people/";
@@ -76,7 +65,6 @@ function MeetTheTeam() {
 
 function Main() {
     return <section className="meet-the-team">
-        <AboutText />
         <TeamHeader />
         <MeetTheTeam />
     </section>

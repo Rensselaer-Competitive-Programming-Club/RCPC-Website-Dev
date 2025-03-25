@@ -1,33 +1,18 @@
-.about-textbox {
-    display: flex;
-    flex-direction: row;
-    border-color: aqua;
-}
-
-.large-text {
-    display: flex;
-    flex-grow: 2;
-    min-width: 80px;
-    min-height: 80px;
-}
-.paragraph {
-    display: flex;
-    min-width: 80px;
-    min-height: 80px;
-}
-
+/*flexbox for title*/
 .card-container-title {
     display: flex;
     justify-content: center;
     padding: 50px 0 20px 0;
 }
 
+/*title styling*/
 .card-container-title > h1 {
     font-size: xx-large;
     font-family: sans-serif;
     font-weight: bolder;
 }
 
+/*flexbox that stacks card rows vertically*/
 .card-container-container {
     display: flex;
     flex-direction: column;
@@ -38,40 +23,48 @@
 
     margin: 50px auto;
 
+    /* this section makes the border styling.
+        I think its cool, but maybe you might
+        want to change it in the future. */
+
     border-top: 10px solid var(--black-color);
     border-bottom: 10px solid var(--black-color);
     
-    border-top-left-radius: 1%;
+    border-top-left-radius: 1%;                         
     border-top-right-radius: 10%;
     border-bottom-left-radius: 10%;
     border-bottom-right-radius: 1%;
 }
 
-/*flexbox that holds the cards*/
+/*flexbox for a row of card components*/
 .card-container {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-    gap: 20px;
+    gap: 20px;                          /*dictates the spacing between cards*/
 
     border-left-width: 5px;
 }
 
-/*flexbox that holds image name role*/
+/*flexbox for the card component*/
+/*can we look into giving more space
+  between the image, name text, and 
+  title text? maybe space-between?*/
 .card {
-    display: flex;                      
-    flex-direction: column;                 
-    align-items: center;
+    display: flex;                          
+    flex-direction: column;                     /*stacks content vertically*/
+    align-items: center;                        /*puts content on center axis*/
     background-color: var(--black-color);             
     border-radius: 25%;
     width: 200px;
-    padding: 80px 25px 80px 25px;
+    padding: 80px 25px 80px 25px;               /*theres probably a better way to do this*/
     color: var(--white-color);
 
-    font-family: sans-serif;
+    font-family: sans-serif;                    /* sans-serif fonts are smooth, which feels
+                                                    quite right with our minimal design */
 }
 
-/*image frame*/
+/*styling for director's image*/
 .card > img {
     width: 120px;                           /*width and height fix image size*/
     height: 120px;                          
@@ -79,7 +72,7 @@
     object-fit: cover;                      /*makes sure image fills space*/
 }
 
-/*name text*/
+/*styling for director's name*/
 .card > h2 {
     font-weight: bold;
     text-align: center;                     /* Centers the text */
@@ -88,7 +81,7 @@
     max-width: 100%;                        /* Prevents overflow */
 }
 
-/*title text*/
+/*styling for director's title*/
 .card > h4 {
     font-weight: normal;                    /*standard*/;
 }
