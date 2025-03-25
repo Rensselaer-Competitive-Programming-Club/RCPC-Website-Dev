@@ -14,6 +14,10 @@ app.get('/', (req, res,) => {
     res.send(express.static('index.html'))
 })
 
+app.get('/database', (req, res) => {
+
+})
+
 app.listen(port, () => {
 	console.log('Listening on *:3000')
 })
