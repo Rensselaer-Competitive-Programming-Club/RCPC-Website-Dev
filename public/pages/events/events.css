@@ -1,0 +1,75 @@
+main{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+}
+
+main p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.notification-bar {
+    width: 100%;
+    background-color: var(--black-color); 
+    color: var(--white-color);
+    text-align: center;
+    padding: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+main iframe {
+    width: 800px;
+    height: 600px;
+    border: 1px solid var(--black-color);
+    border-radius: 8px;
+    overflow: hidden;                
+}
+
+.events-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    height: 600px;                     
+    overflow-y: auto; 
+    width: 300px; 
+    border: 1px solid var(--black-color);
+    border-radius: 8px;
+}
+
+.event-card {
+    background-color: var(--white-color);
+    border: 1px solid var(--black-color);
+    border-radius: 8px;
+    padding: 20px;
+    min-height: 100px; 
+    flex-shrink: 0; 
+}
+
+.event-card:hover {
+    background-color: var(--light-color);
+    border: 1px solid var(--accent-color);
+
+}
+
+.events-grid::-webkit-scrollbar {
+    width: 8px;
+}
+
+.events-grid::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.events-grid::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.events-grid::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
