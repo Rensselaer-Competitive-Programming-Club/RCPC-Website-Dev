@@ -1,0 +1,18 @@
+{
+    "events": [
+        {
+            "title": "Club Meeting",
+            "date": "Every Week on Thursdays",
+            "time": "6:00 PM - 8:00 PM",
+            "location": "Sage 4101",
+            "description": "Weekly club meeting"
+        },
+        {
+            "title": "Filler",
+            "date": "2024-03-25",
+            "time": "7:00 PM",
+            "location": "Union 3602",
+            "description": "Hiii! Hello! Bye!"
+        }
+    ]
+} 
