@@ -1,8 +1,10 @@
 'use strict';
 
 function Footer() {
-    return React.createElement(
-        
+    return (
+        <footer>
+            <p></p>
+        </footer>
     );
 }
 
