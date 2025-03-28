@@ -36,7 +36,7 @@ main iframe {
     padding: 20px;
     height: 600px;                     
     overflow-y: auto; 
-    width: 300px; 
+    width: 250px;
     border: 1px solid var(--black-color);
     border-radius: 8px;
 }
@@ -45,15 +45,41 @@ main iframe {
     background-color: var(--white-color);
     border: 1px solid var(--black-color);
     border-radius: 8px;
-    padding: 20px;
-    min-height: 100px; 
-    flex-shrink: 0; 
+    padding: 15px;
+    height: 120px;
+    width: 100%;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.event-description, .event-details {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: opacity 0.2s ease;
+}
+
+.event-description {
+    text-align: center;
+}
+
+.event-description p {
+    color: var(--black-color);
+    margin: 0;
+    line-height: 1.4;
+    font-size: 0.85em;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
 }
 
 .event-card:hover {
     background-color: var(--light-color);
     border: 1px solid var(--accent-color);
-
 }
 
 .events-grid::-webkit-scrollbar {
@@ -72,4 +98,15 @@ main iframe {
 
 .events-grid::-webkit-scrollbar-thumb:hover {
     background: #555;
+}
+
+.event-card h3 {
+    margin: 0 0 8px 0;
+    color: var(--black-color);
+    font-size: 1em;
+}
+
+.event-card p {
+    margin: 4px 0;
+    font-size: 0.85em;
 }

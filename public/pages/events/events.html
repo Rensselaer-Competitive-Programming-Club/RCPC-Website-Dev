@@ -23,18 +23,69 @@
 
         <main>
             <iframe src="https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=America%2FNew_York&showPrint=0&src=cmNwYy5ycGlAZ21haWwuY29t&src=ZW4udXNhI2hvbGlkYXlAZ3JvdXAudi5jYWxlbmRhci5nb29nbGUuY29t&color=%23039BE5&color=%230B8043"></iframe>
-            <div class="events-grid">
-                <div class="event-card">Add Event 1 Here</div>
-                <div class="event-card">Add Event 2 Here</div>
-                <div class="event-card">Add Event 3 Here</div>
-                <div class="event-card">Add Event 4 Here</div>
+            <div id="events-container" class="events-grid">
+                <!-- Event cards -->
             </div>
-
         </main>
 
         <footer><p></p></footer>
 
         <script src="/resources/components/header.js" type="text/babel"></script>
         <script src="/resources/components/footer.js" type="text/babel"></script>
+
+        <script type="text/babel">
+            function EventCard({ title, date, time, location, description }) {
+                const [isHovered, setIsHovered] = React.useState(false);
+
+                return (
+                    <div 
+                        className="event-card"
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)} >
+                        {isHovered ? (
+                            <div className="event-description">
+                                <p>{description}</p>
+                            </div>
+                        ) : (
+                            <div className="event-details">
+                                <h3>{title}</h3>
+                                <p>{date} at {time}</p>
+                                <p>📍 {location}</p>
+                            </div>
+                        )}
+                    </div>
+                );
+            }
+
+            function EventsList() {
+                const [events, setEvents] = React.useState([]);
+
+                React.useEffect(() => {
+                    fetch('/pages/events/events.json')
+                        .then(response => response.json())
+                        .then(data => setEvents(data.events))
+                        .catch(error => console.error('Error loading events:', error));
+                }, []);
+
+                return (
+                    <>
+                        {events.map((event, index) => (
+                            <EventCard
+                                key={index}
+                                title={event.title}
+                                date={event.date}
+                                time={event.time}
+                                location={event.location}
+                                description={event.description} />
+                        ))}
+                    </>
+                );
+            }
+
+            ReactDOM.render(
+                <EventsList />,
+                document.getElementById('events-container')
+            );
+        </script>
     </body>
 </html>
