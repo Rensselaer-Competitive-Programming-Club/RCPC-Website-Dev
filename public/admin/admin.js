@@ -15,6 +15,15 @@ function Text() {
     </div> 
 }
 
+/*
+ * html form for uploading the password
+ * action field describes the endpoint password is sent to
+ * no way for xss to happen (everything is static)
+ * should check on server-side for sanitizing input b4 reading
+ * is there a risk for reading??
+*/
+
+
 function Form() {
     return <form action="/server-endpoint-here" method="post">
         <label for="password">Enter the password here:</label><br />
