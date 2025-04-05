@@ -25,7 +25,7 @@ function Text() {
 
 
 function Form() {
-    return <form action="/server-endpoint-here" method="post">
+    return <form action="/admin" method="post">
         <label for="password">Enter the password here:</label><br />
         <input type="password" id="password" name="password"></input>
     </form>
