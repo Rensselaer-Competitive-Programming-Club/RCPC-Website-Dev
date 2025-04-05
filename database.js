@@ -101,6 +101,31 @@ async function insertData(collectionName, data) {
     }
 }
 
+/* findData(collection, data)
+ * 
+ * 
+*/
+async function findData(collection, data) {
+    
+}
+
+/* updateData(collection, data)
+ *
+ * 
+*/
+async function updateData(collection, data) {
+
+}
+
+/* deleteData(collection, data)
+ *
+ *
+*/
+async function deleteData(collection, data) {
+
+} 
+
+
 
 async function fetchAdminPassword() {
     
@@ -127,5 +152,8 @@ async function fetchAdminPassword() {
 
 module.exports = {
     getPassword: fetchAdminPassword,
-    closeMongo: closeMongo
+    closeMongo: closeMongo,
+    readData: findData,
+    postData: insertData,
+    deleteData: deleteData 
   };
