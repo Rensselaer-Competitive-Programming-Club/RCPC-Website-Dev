@@ -1,0 +1,67 @@
+.hero {
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font: var(--fontA);
+    text-align: center;
+    padding: 0 20px;
+}
+
+.hero h1 {
+    font-size: 3rem;
+    color: var(--black-color);
+    margin-bottom: 20px;
+}
+
+.hero p {
+    font-size: 1.5rem;
+    color: gray;
+    margin-bottom: 20px;
+}
+
+.upcoming-events {
+    background-color: lightgray;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: row;
+    font: var(--fontA);
+    justify-content: space-between;
+}
+
+.upcoming-events-left {
+    flex: 1;
+    padding: 30px;
+    align-items: center;
+    justify-content: center;
+}
+
+.upcoming-events-left h2 {
+    font-size: 2rem;
+    color: var(--accent-color);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.upcoming-events-left p {
+    font-size: 1.2rem;
+    color: var(--black-color);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.upcoming-events-right {
+    flex: 1;
+    padding: 20px;
+}
+
+iframe {
+    width: 600px;
+    height: 450px;
+    border: 1px solid var(--black-color);
+    border-radius: 8px;
+    overflow: hidden;  
+}
