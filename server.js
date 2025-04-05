@@ -5,7 +5,12 @@ const path = require('path')
 const app = express() // Creates Express Instance
 const port = 3000 // Define the Port
 
-const { getPassword } = require('./database.js');
+/* database function imports */
+const { getPassword, closeMongo } = require('./database.js');
+
+/* closes db connection when program is closed */
+process.on("SIGINT", closeMongo);
+process.on("SIGTERM", closeMongo);
 
 // Middleware
 app.use(express.json());
