@@ -33,7 +33,7 @@ app.post('/admin', (req, res) => {
     if (userInput == hashedPassword) {
         res.redirect('/admin/dashboard');
     } else {
-        res.redirect('/?error=incorrect_password');
+        res.redirect('/?error=incorrect_password'); // Redirect back to the login page (root in this case)
     }
     
 });
