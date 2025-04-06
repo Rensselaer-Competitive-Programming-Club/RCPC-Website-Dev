@@ -105,8 +105,37 @@ async function insertData(collectionName, data) {
  * 
  * 
 */
-async function findData(collection, data) {
+async function findData(collectionName, query) {
     
+    try {
+
+        // verifies correctness of the program
+        if (collectionName == null || query == null) {
+            throw new Error("One or more arguments of insertData is null");
+        }
+
+        let db = cachedDB;
+        if (db == null) {
+            await getMongo();
+        }
+
+        const collection = db.collection(collectionName);
+
+        let result;
+
+        // might be a good idea to send a special message if nothing is found
+        // or if an error is caused by the query, like an invalidKey argument
+        //          ^^^^ this is possible with a schema ^^^^
+        cursor = await collection.find(query);
+        result = await cursor.toArray();
+
+        return result;
+
+
+    } catch(error) {
+        console.error(`Error inserting data into collection "${collectionName}":`, error);
+        return false;
+    }
 }
 
 /* updateData(collection, data)

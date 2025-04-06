@@ -65,13 +65,16 @@ app.get('/database/:collection', (req, res) => {
 
                 // respond to FE with formatted data json
                 res.status(200).json({});
-            }, 
+        }, 
                 
             // this block executes if the promise does not resolve *indicates something wrong with server to db connection?*
             (failure) => {
                 console.error("promise to finish database query failed", failure);
-                res.status(500).json({});
-            })
+                res.status(500).json({
+                    message: "There was an error while connecting to the database.",
+                    error: failure
+                });
+            });
 });
 
 app.post('/database/:collection', (req, res) => {
@@ -93,10 +96,16 @@ app.post('/database/:collection', (req, res) => {
                 }
 
                 res.status(200).json({});
-        }, (failure) => {
-            console.error("promise to finish database query failed", failure);
-            res.status(500).json({});
-        })
+        }, 
+        
+            // this block executes if the promise does not resolve *indicates something wrong with server to db connection?*
+            (failure) => {
+                console.error("promise to finish database query failed", failure);
+                res.status(500).json({
+                    message: "There was an error while connecting to the database.",
+                    error: failure
+                });
+            });
 });
 
 app.delete('/database/:collection', (req, res) => {
@@ -124,7 +133,10 @@ app.delete('/database/:collection', (req, res) => {
             // this block executes if the promise does not resolve *indicates something wrong with server => db connection?*
             (failure) => {
                 console.error("promise to finish database query failed", failure);
-                res.status(500).json({});
+                res.status(500).json({
+                    message: "There was an error while connecting to the database.",
+                    error: failure
+                });
             });
 });
 
@@ -142,13 +154,18 @@ app.post('/admin', (req, res) => {
             if (hashedPassword == userInput) {
                 res.redirect('/admin/dashboard');
             } else {
-                res.status(401).json({}); // Redirect back to the login page NEEDS TO BE IMPLEMENTED
+                res.status(401).json({              // Redirect back to the login page NEEDS TO BE IMPLEMENTED
+                    message: "Incorrect Password"
+                });
             }
         },
 
         (failure) => {
             console.log("could not resolve promise", failure);
-            res.status(500);
+            res.status(500).json({
+                message: "An error occurred while connecting to the database.",
+                error: failure
+            });
         }
     )
 });
