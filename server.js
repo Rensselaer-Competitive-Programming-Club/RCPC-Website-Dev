@@ -11,13 +11,11 @@ const { getPassword, closeMongo,
 
 /* closes db connection when server.js is closed */
 process.on("SIGINT", async () => {
-    console.log("Closing connection with mongo.");
     await closeMongo();
     console.log("Closing program.");
     process.exit(0);
 });
 process.on("SIGTERM", async () => {
-    console.log("Closing connection with mongo.");
     await closeMongo();
     console.log("Closing program.");
     process.exit(0);
@@ -34,8 +32,12 @@ app.get('/', (req, res,) => {
 })
 
 /* /database endpoints:
- * used by FE to get/post/delete data
- * request args:
+ *  - get endpoint for read operations
+ *  - post endpoint for insert operations
+ *  - delete endpoint for remove operations
+ * 
+ * endpoints are used by FE to get/post/delete data
+ * request arguments:
  *  - path arg: the collection
  *  - query args: key/value pairs used for querying the collection
 */ 
@@ -45,8 +47,7 @@ app.get('/database/:collection', (req, res) => {
     const collection = req.params['collection'];
     const query = req.query;
 
-    /* some amount of preprocessing query argument
-     * to match readData specs needs to happen here */ 
+    // preprocess query to match readData() specs
 
     return readData(collection, query)
         .then(
@@ -56,18 +57,20 @@ app.get('/database/:collection', (req, res) => {
                 let result = success.result; // result is the data requested by FE
                 if (result == null) {
                     // something bad happened earlier, check error args of success
-                    // respond to FE with an error message (501), telling them something went wrong
+                    // respond to FE with an error message (400), telling them something went wrong
+                    res.status(400).json({});
                 }
 
                 // preprocess result into a json thats useful for frontend
 
                 // respond to FE with formatted data json
+                res.status(200).json({});
             }, 
                 
-            // this block executes if the promise does not resolve *indicates something wrong with server => db connection?*
+            // this block executes if the promise does not resolve *indicates something wrong with server to db connection?*
             (failure) => {
-                console.error("promise to finish database query failed", result);
-                // respond to FE with an error message (501)
+                console.error("promise to finish database query failed", failure);
+                res.status(500).json({});
             })
 });
 
@@ -76,18 +79,23 @@ app.post('/database/:collection', (req, res) => {
     const collection = req.params['collection'];
     const query = req.query;
 
+    // preprocess query to match postData() specs
+
     return postData(collection, query)
         .then(
             
             // this block executes if the promise successfully resolves *still need to check success for an error*
             (success) => {
-            let result = success.result;
-            if (result == null) {
-                // something bad happened earlier, check error args of success
-            }
+                let result = success.result;
+                if (result == null) {
+                    // something bad happened earlier, check error args of success
+                    res.status(400).json({});
+                }
+
+                res.status(200).json({});
         }, (failure) => {
-            console.error("promise to finish database query failed", result);
-            // respond to FE with an error message (501)
+            console.error("promise to finish database query failed", failure);
+            res.status(500).json({});
         })
 });
 
@@ -95,6 +103,8 @@ app.delete('/database/:collection', (req, res) => {
     
     const collection = req.params['collection'];
     const query = req.query;
+
+        // preprocess query to match deleteData() specs
 
     return deleteData(collection, query)
         .then(
@@ -105,17 +115,18 @@ app.delete('/database/:collection', (req, res) => {
                 if (result == false) {
                     // something bad happened earlier, check error args of success
                     // then respond to the caller with an error message, telling them something went wrong
+                    res.status(400).json({});
                 }
 
                 // respond to caller that delete op was successful
-            
+                res.status(200).json({});
         },
             // this block executes if the promise does not resolve *indicates something wrong with server => db connection?*
             (failure) => {
-                console.error("promise to finish database query failed", result);
-                // respond to FE with an error message (501)
-            })
-})
+                console.error("promise to finish database query failed", failure);
+                res.status(500).json({});
+            });
+});
 
 /* /admin endpoint:
  * lets client verify as admin
@@ -123,19 +134,21 @@ app.delete('/database/:collection', (req, res) => {
  * make sure to add authentication token to user session
 */
 app.post('/admin', (req, res) => {
-    const userInput = req.body.password;
+    
+    const userInput = req.body.password; // gets user input
     getPassword().then(
+
         (hashedPassword) => {
             if (hashedPassword == userInput) {
                 res.redirect('/admin/dashboard');
             } else {
-                res.redirect('/?error=incorrect_password'); // Redirect back to the login page (root in this case)
+                res.status(401).json({}); // Redirect back to the login page NEEDS TO BE IMPLEMENTED
             }
         },
 
         (failure) => {
-            console.log("could not resolve promise");
-            res.redirect('/?error=unresolved_promise');
+            console.log("could not resolve promise", failure);
+            res.status(500);
         }
     )
 });
