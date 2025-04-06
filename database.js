@@ -1,7 +1,4 @@
-require('dotenv').config(); // Load environment variables from a .env file (if you have one)
-const { MongoClient } = require('mongodb');
-const dbUri = process.env.DB;
-const dbName = "rcpc-website-database";
+
 
 /* caches vars for less getMongo() calls */
 let cachedClient = null;
@@ -109,7 +106,7 @@ async function insertData(collectionName, data) {
 async function findData(collectionName, query) {
 
     try {
-        
+
         // verifies correctness of the program
         if (collectionName == null || query == null) {
             throw new Error("One or more arguments of insertData is null");

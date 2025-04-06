@@ -2,6 +2,13 @@
 const express = require('express')
 const path = require('path')
 
+// instantiate mongo db obj
+require('dotenv').config(); // Load environment variables from a .env file (if you have one)
+const { MongoClient } = require('mongodb');
+const dbUri = process.env.DB;
+const dbName = "rcpc-website-database";
+
+
 const app = express() // Creates Express Instance
 const port = 3000 // Define the Port
 
@@ -42,102 +49,132 @@ app.get('/', (req, res,) => {
  *  - query args: key/value pairs used for querying the collection
 */ 
 
-app.get('/database/:collection', (req, res) => {
+app.get('/database/:collection', async (req, res) => {
 
-    const collection = req.params['collection'];
+    const collection = req.params.collection;
     const query = req.query;
 
     console.log("read request to database recieved from", req.ip);
     console.log(`for collection ${collection} with query args ${JSON.stringify(query)}`);
 
-    // preprocess query to match readData() specs
+    // convert all datatypes in query
+    // from str to their proper form
 
-    return readData(collection, query)
-        .then(
-            
-            // this block executes if the promise successfully resolves *still need to check success for an error*
-            (success) => {
-                
-                if (!success.ok) {
-                    // checks if error was thrown in database.js
-                    return res.status(400).json(success);
-                } else {
-                    // just responds with the data
-                    return res.status(200).json(success.data);
-                }
-        }, 
-                
-            // this block executes if the promise does not resolve *indicates something wrong with server to db connection?*
-            (failure) => {
-                console.error("promise to finish database query failed", failure);
-                return res.status(500).json({
-                    message: "There was an error while connecting to the database.",
-                    error: failure
-                });
-            });
+    try {
+
+        const client = await MongoClient(dbUri);
+        let db = client.db(dbName).collection(collection);
+
+        const data = await db.find(query).toArray();
+        const result = {
+            ok: true,
+            data: data
+        }
+
+        return res.status(200).json(result);
+
+    } catch(error) {
+
+        console.log("there was an error with read request to database", error);
+        const result = {
+            ok: false,
+            error: error
+        }
+
+        return res.status(500).json(result);
+
+    }
 });
 
-app.post('/database/:collection', (req, res) => {
+app.post('/database/:collection', async (req, res) => {
     
-    const collection = req.params['collection'];
+    const collection = req.params.collection;
     const query = req.query;
 
-    // preprocess query to match postData() specs
 
-    return postData(collection, query)
-        .then(
-            
-            // this block executes if the promise successfully resolves *still need to check success for an error*
-            (success) => {
-                let result = success.result;
-                if (result == null) {
-                    // something bad happened earlier, check error args of success
-                    res.status(400).json({});
-                }
+    console.log("post request to database recieved from", req.ip);
+    console.log(`for collection ${collection} with query args ${JSON.stringify(query)}`);
 
-                res.status(200).json({});
-        }, 
+    // convert all datatypes in query
+    // from str to their proper form
+
+    try {
+
+        const client = await MongoClient(dbUri);
+        let db = client.db(dbName).collection(collection);
+
+        let data;
+        let result;
+
+        if (Array.isArray(query)) {
+            data = await db.insertMany(query);
+        } else {
+            db.insert(query);
+        }
+
+        result = {
+            ok: true,
+            data: data
+        }
+
+        return res.status(200).json(result);
+
+    } catch(error) {
+
+        console.log("there was an error with post request to database", error);
+        const result = {
+            ok: false,
+            error: error
+        }
+
+        return res.status(500).json(result);
+    }
+    
+});
+
+app.delete('/database/:collection', async (req, res) => {
+    
+    const collection = req.params.collection;
+    const deleteMany = req.query.deleteMany;
+
+    delete req.query.deleteMany;
+    const query = req.query;
+
+    console.log("delete request to database recieved from", req.ip);
+    console.log(`for collection ${collection} with query args ${JSON.stringify(query)}`);
+
+    try {
         
-            // this block executes if the promise does not resolve *indicates something wrong with server to db connection?*
-            (failure) => {
-                console.error("promise to finish database query failed", failure);
-                res.status(500).json({
-                    message: "There was an error while connecting to the database.",
-                    error: failure
-                });
-            });
-});
+        const client = await MongoClient(dbUri);
+        let db = client.db(dbName).collection(collection);
 
-app.delete('/database/:collection', (req, res) => {
+        let data;
+        let result;
+
+        if (deleteMany === true) {
+            data = await db.deleteMany(query);
+        } else {
+            db.deleteOne(query);
+        }
+
+        result = {
+            ok: true,
+            data: data
+        }
+
+        return res.status(200).json(result);
+
+    } catch(error) {
+
+        console.log("there was an error with delete request to database", error);
+        const result = {
+            ok: false,
+            error: error
+        }
+
+        return res.status(500).json(result);
+    }
     
-    const collection = req.params['collection'];
-    const query = req.query;
-
-        // preprocess query to match deleteData() specs
-
-    return deleteData(collection, query)
-        .then(
-            
-            // this block executes if the promise successfully resolves *still need to check success for an error*
-            (success) => {
-                let result = success.result; // result is confirmation that the delete operation executed successfully
-                if (result == false) {
-                    // something bad happened earlier, check error args of success
-                    // then respond to the caller with an error message, telling them something went wrong
-                    res.status(400).json({});
-                }
-
-                // respond to caller that delete op was successful
-                res.status(200).json({});
-        },
-            // this block executes if the promise does not resolve *indicates something wrong with server => db connection?*
-            (failure) => {
-                console.error("promise to finish database query failed", failure);
-                res.status(500).json({
-                    message: "There was an error while connecting to the database.",
-                    error: failure
-                });
-            });
 });
 
 /* /admin endpoint:
