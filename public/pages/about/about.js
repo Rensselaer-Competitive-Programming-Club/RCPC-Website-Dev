@@ -1,5 +1,7 @@
 'use strict';
 
+const { useState, useEffect } = React;
+
 /*makes the text that says "Meet the Team"*/
 function TeamHeader() {
     return <div className="card-container-title">
@@ -20,23 +22,56 @@ function Card({src, name, title}) {
 /*in the future, data should be fetched from db*/
 function MeetTheTeam() {
     
-    var imagePath = "/resources/images/people/";
+    console.log("Meet the team called");
 
-    const members = [
-        { src: imagePath + "marinc8.png", name: "CJ Marino", title: "Club President" },
-        { src: imagePath + "partrm2.png", name: "Matthew Partridge", title: "Internal VP" },
-        { src: imagePath + "baimej.png", name: "Jackson Baimel", title: "External VP" },
-        { src: imagePath + "wenga.png", name: "Alan Weng", title: "Director of Finance" },
-        { src: imagePath + "liewh.png", name: "Hin Yan Liew", title: "Director of Logistics" },
-        { src: imagePath + "tianj4.png", name: "Jaden Tien", title: "Director of Resources" },
-        { src: imagePath + "kollah.png", name: "Heman Kolla", title: "Director of Sponsorship" },
-        { src: imagePath + "lleonj.png", name: "Jacob Lleonart", title: "Director of Marketing" },
-        { src: imagePath + "hebbej.png", name: "Jacob Hebbel", title: "Director of Technology" }
-    ];
+    const [members, setMembers] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const imagePath = "/resources/images/people/";
+
+    // useEffect handles the async nature of the db call
+    // tracks if the call succeeds/fails, and properly
+    // updates members/loading/error with whatever happens
+    useEffect(() => {
+        async function fetchTeamMembers() {
+            try {
+                const response = await fetch('http://localhost:3000/database/directors?isActive=true');
+                if (!response.ok) {
+                    throw new Error(`HTTP Error! Status ${response.status}`);
+                }
+
+                const board = await response.json();
+                const persons = board.map(member => ({
+                    src: imagePath + member["rcs"] + ".png",
+                    name: member["name"],
+                    title: member["role"]
+                }));
+                setMembers(persons);
+                setLoading(false);
+            } catch(error) {
+                setError(error.message);
+                setLoading(false);
+            }
+        }
+
+        fetchTeamMembers();
+    }, []); // empty array means function runs more than once (in the event of loading outcome)
+
+
+    console.log("async db call finished");
+    if (loading) {
+        return <div>Loading team members ...</div>
+    }
+
+    if (error) {
+        return <div>Error with loading team members: {error.message}</div>
+    }
     
-    var presidents = [members[1], members[0], members[2]];
-    var directors1 = [members[3], members[4], members[5]];
-    var directors2 = [members[6], members[7], members[8]];
+    const presidents = members.filter(member => member.title.includes("President")); // Example filtering
+    const directors = members.filter(member => member.title.includes("Director") && !member.title.includes("President"));
+
+    var directors1 = directors.filter(member => !member.name.includes("Heman") && !member.name.includes("Jacob"));
+    var directors2 = directors.filter(member => member.name.includes("Heman") || member.name.includes("Jacob"));
 
     return <div className="card-container-container"> 
         

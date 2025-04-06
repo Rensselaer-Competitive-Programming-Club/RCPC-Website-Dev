@@ -47,6 +47,9 @@ app.get('/database/:collection', (req, res) => {
     const collection = req.params['collection'];
     const query = req.query;
 
+    console.log("read request to database recieved from", req.ip);
+    console.log(`for collection ${collection} with query args ${JSON.stringify(query)}`);
+
     // preprocess query to match readData() specs
 
     return readData(collection, query)
@@ -54,23 +57,20 @@ app.get('/database/:collection', (req, res) => {
             
             // this block executes if the promise successfully resolves *still need to check success for an error*
             (success) => {
-                let result = success.result; // result is the data requested by FE
-                if (result == null) {
-                    // something bad happened earlier, check error args of success
-                    // respond to FE with an error message (400), telling them something went wrong
-                    res.status(400).json({});
+                
+                if (!success.ok) {
+                    // checks if error was thrown in database.js
+                    return res.status(400).json(success);
+                } else {
+                    // just responds with the data
+                    return res.status(200).json(success.data);
                 }
-
-                // preprocess result into a json thats useful for frontend
-
-                // respond to FE with formatted data json
-                res.status(200).json({});
         }, 
                 
             // this block executes if the promise does not resolve *indicates something wrong with server to db connection?*
             (failure) => {
                 console.error("promise to finish database query failed", failure);
-                res.status(500).json({
+                return res.status(500).json({
                     message: "There was an error while connecting to the database.",
                     error: failure
                 });

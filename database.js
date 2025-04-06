@@ -1,6 +1,7 @@
 require('dotenv').config(); // Load environment variables from a .env file (if you have one)
 const { MongoClient } = require('mongodb');
 const dbUri = process.env.DB;
+const dbName = "rcpc-website-database";
 
 /* caches vars for less getMongo() calls */
 let cachedClient = null;
@@ -23,7 +24,7 @@ async function getMongo() {
             const client = new MongoClient(dbUri);
             await client.connect();
             cachedClient = client;
-            cachedDB = client.db();
+            cachedDB = client.db(dbName);
             console.log("Successfully opened mongo connection");
         }
 
@@ -71,10 +72,10 @@ async function insertData(collectionName, data) {
         let db = cachedDB;
         if (db == null) {
             await getMongo();
+            db = cachedDB;
         }
 
-        const collection = db.collection(collectionName);
-
+        var collection = db.collection(collectionName);
         let result;
         
         // { data is an array } => use insert many
@@ -106,35 +107,51 @@ async function insertData(collectionName, data) {
  * 
 */
 async function findData(collectionName, query) {
-    
-    try {
 
+    try {
+        
         // verifies correctness of the program
         if (collectionName == null || query == null) {
             throw new Error("One or more arguments of insertData is null");
         }
+    
 
         let db = cachedDB;
         if (db == null) {
             await getMongo();
+            db = cachedDB;
         }
 
         const collection = db.collection(collectionName);
 
-        let result;
-
         // might be a good idea to send a special message if nothing is found
         // or if an error is caused by the query, like an invalidKey argument
         //          ^^^^ this is possible with a schema ^^^^
-        cursor = await collection.find(query);
-        result = await cursor.toArray();
 
-        return result;
+
+        // preprocess query fields here
+
+        if (query.isActive == "true") {
+            query.isActive = true;
+        } else {
+            query.isActive = false;
+        }
+
+        var cursor = await collection.find(query);
+        var result = await cursor.toArray();
+
+        return {
+            ok: true,
+            data: result
+        };
 
 
     } catch(error) {
-        console.error(`Error inserting data into collection "${collectionName}":`, error);
-        return false;
+        console.error(`Error finding data for collection "${collectionName}":`, error);
+        return {
+            ok: false,
+            error: error
+        };
     }
 }
 
