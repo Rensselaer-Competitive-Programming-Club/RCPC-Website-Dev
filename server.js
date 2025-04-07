@@ -4,10 +4,18 @@ const path = require('path')
 
 // instantiate mongo db obj
 require('dotenv').config(); // Load environment variables from a .env file (if you have one)
-const { MongoClient } = require('mongodb');
-const dbUri = process.env.DB;
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const { error } = require('console');
+const uri = process.env.DB;
 const dbName = "rcpc-website-database";
 
+const client = new MongoClient(uri, {
+    serverApi: {
+        version: ServerApiVersion.v1,
+        strict: true,
+        deprecationErrors: true
+    }
+});
 
 const app = express() // Creates Express Instance
 const port = 3000 // Define the Port
@@ -16,17 +24,17 @@ const port = 3000 // Define the Port
 const { getPassword, closeMongo, 
     postData, readData, deleteData } = require('./database.js');
 
-/* closes db connection when server.js is closed */
-process.on("SIGINT", async () => {
-    await closeMongo();
-    console.log("Closing program.");
-    process.exit(0);
-});
-process.on("SIGTERM", async () => {
-    await closeMongo();
-    console.log("Closing program.");
-    process.exit(0);
-});
+// /* closes db connection when server.js is closed */
+// process.on("SIGINT", async () => {
+//     await closeMongo();
+//     console.log("Closing program.");
+//     process.exit(0);
+// });
+// process.on("SIGTERM", async () => {
+//     await closeMongo();
+//     console.log("Closing program.");
+//     process.exit(0);
+// });
 
 // Middleware
 app.use(express.json());
@@ -61,11 +69,10 @@ app.get('/database/:collection', async (req, res) => {
     // from str to their proper form
 
     try {
-
-        const client = await MongoClient(dbUri);
-        let db = client.db(dbName).collection(collection);
-
-        const data = await db.find(query).toArray();
+        const db = client.db(dbName);
+        const collection = db.collection(collection);
+        
+        const data = await collection.find(query).toArray();
         const result = {
             ok: true,
             data: data
@@ -100,16 +107,16 @@ app.post('/database/:collection', async (req, res) => {
 
     try {
 
-        const client = await MongoClient(dbUri);
-        let db = client.db(dbName).collection(collection);
-
+        const db = client.db(dbName);
+        const collection = db.collection(collection);
+        
         let data;
         let result;
 
         if (Array.isArray(query)) {
-            data = await db.insertMany(query);
+            data = await collection.insertMany(query);
         } else {
-            db.insert(query);
+            collection.insert(query);
         }
 
         result = {
@@ -145,16 +152,16 @@ app.delete('/database/:collection', async (req, res) => {
 
     try {
         
-        const client = await MongoClient(dbUri);
-        let db = client.db(dbName).collection(collection);
+        const db = client.db(dbName);
+        const collection = db.collection(collection);
 
         let data;
         let result;
 
         if (deleteMany === true) {
-            data = await db.deleteMany(query);
+            data = await collection.deleteMany(query);
         } else {
-            db.deleteOne(query);
+            collection.deleteOne(query);
         }
 
         result = {
