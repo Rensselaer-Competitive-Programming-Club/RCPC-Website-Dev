@@ -55,7 +55,7 @@ app.get('/', (req, res,) => {
  * request arguments:
  *  - path arg: the collection
  *  - query args: key/value pairs used for querying the collection
-*/ 
+*/
 
 app.get('/database/:collection', async (req, res) => {
 
@@ -68,17 +68,21 @@ app.get('/database/:collection', async (req, res) => {
     // convert all datatypes in query
     // from str to their proper form
 
-    if (query.isActive === 'true') {
+    if (query.isActive === "true") {
         query.isActive = true;
     } else {
         query.isActive = false;
     }
 
+    console.log(`for collection ${collectionName} with query args ${JSON.stringify(query)}`);
+
     try {
+
         const db = client.db(dbName);
         const collection = db.collection(collectionName);
-        
+
         const data = await collection.find(query).toArray();
+
         const result = {
             ok: true,
             data: data
