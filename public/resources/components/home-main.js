@@ -6,8 +6,9 @@ function Home() {
             {/* Section 1; Hero */}
             <div className="hero">
                 <h1>Rensselaer Competitive Programming Club</h1>
-                <p>Example Mission: Discover amazing content and connect with our community.</p>
+                <p>Foster a community of competitive programmers</p>
             </div>
+
             {/* Section 2; Upcoming Events */}
             <div className="upcoming-events-container">
                 <div className="upcoming-events">
@@ -20,14 +21,40 @@ function Home() {
                     </div>
                 </div>
             </div>
+
             {/* Section 3; Achievements */}
-            <div className="achievements">
-                <h2>Achievements</h2>
-                <ul>
-                    <li>Achievement 1</li>
-                    <li>Achievement 2</li>
-                    <li>Achievement 3</li>
-                </ul>
+            <div className="achievements-container">
+                <div className="achievements-top">
+                    <h2>Achievements</h2>
+                </div>
+                <div className="achievements-list">
+                    <ul>
+                        <li>
+                            <h4>Achievement 1</h4>
+                            <p>Description of Achievement 1</p>
+                        </li>
+                        <li>
+                            <h4>Achievement 2</h4>
+                            <p>Description of Achievement 2</p>
+                        </li>
+                        <li>
+                            <h4>Achievement 3</h4>
+                            <p>Description of Achievement 3</p>
+                        </li>
+                        <li>
+                            <h4>Achievement 4</h4>
+                            <p>Description of Achievement 3</p>
+                        </li>
+                        <li>
+                            <h4>Achievement 5</h4>
+                            <p>Description of Achievement 3</p>
+                        </li>
+                        <li>
+                            <h4>Achievement 6</h4>
+                            <p>Description of Achievement 3</p>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </main>
     );
