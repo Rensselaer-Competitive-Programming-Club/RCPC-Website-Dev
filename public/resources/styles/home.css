@@ -22,10 +22,22 @@
     margin-bottom: 20px;
 }
 
+.upcoming-events-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 30px;
+}
+
 .upcoming-events {
-    background-color: lightgray;
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    padding: 20px 40px;
+    box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.05),
+                -4px 0 6px rgba(0, 0, 0, 0.05),
+                4px 0 6px rgba(0, 0, 0, 0.05);
+    border: 2px solid var(--black-color);
+    border-radius: 12px;
     display: flex;
     flex-direction: row;
     font: var(--fontA);
@@ -33,6 +45,8 @@
 }
 
 .upcoming-events-left {
+    display: flex;
+    flex-direction: column;
     flex: 1;
     padding: 30px;
     align-items: center;
@@ -40,14 +54,14 @@
 }
 
 .upcoming-events-left h2 {
-    font-size: 2rem;
+    font-size: 2.5rem;
     color: var(--accent-color);
     margin-bottom: 20px;
     text-align: center;
 }
 
 .upcoming-events-left p {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     color: var(--black-color);
     margin-bottom: 20px;
     text-align: center;
@@ -61,7 +75,75 @@
 iframe {
     width: 600px;
     height: 450px;
-    border: 1px solid var(--black-color);
+    border: 2px solid var(--accent-color);
     border-radius: 8px;
     overflow: hidden;  
+}
+
+.achievements-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    margin: 0px 0;
+}
+
+.achievements-top {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 0 40px 20px 40px;
+}
+
+.achievements-top h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    color: var(--accent-color);
+    margin-bottom: 20px;
+    padding: 0 20px;
+}
+
+.achievements-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 20px;
+    width: 100%;
+    padding: 0 40px;
+}
+
+.achievements-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: contents;
+}
+
+.achievements-list li {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.03),
+                0 2px 4px rgba(0, 0, 0, 0.03),
+                -2px 0 4px rgba(0, 0, 0, 0.03),
+                2px 0 4px rgba(0, 0, 0, 0.03);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 1.2rem;
+}
+
+.achievements-list li h4 {
+    font-size: 1.5rem;
+    color: var(--accent-color);
+}
+
+.achievements-list li p {
+    font-size: 1.2rem;
+    color: var(--black-color);
+    text-align: left;
 }
