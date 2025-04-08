@@ -41,7 +41,7 @@ function MeetTheTeam() {
                 }
 
                 const board = await response.json();
-                const persons = board.map(member => ({
+                const persons = board.data.map(member => ({
                     src: imagePath + member["rcs"] + ".png",
                     name: member["name"],
                     title: member["role"]

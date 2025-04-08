@@ -55,24 +55,34 @@ app.get('/', (req, res,) => {
  * request arguments:
  *  - path arg: the collection
  *  - query args: key/value pairs used for querying the collection
-*/ 
+*/
 
 app.get('/database/:collection', async (req, res) => {
 
-    const collection = req.params.collection;
-    const query = req.query;
+    const collectionName = req.params.collection;
+    let query = req.query;
 
     console.log("read request to database recieved from", req.ip);
-    console.log(`for collection ${collection} with query args ${JSON.stringify(query)}`);
+    console.log(`for collection ${collectionName} with query args ${JSON.stringify(query)}`);
 
     // convert all datatypes in query
     // from str to their proper form
 
+    if (query.isActive === "true") {
+        query.isActive = true;
+    } else {
+        query.isActive = false;
+    }
+
+    console.log(`for collection ${collectionName} with query args ${JSON.stringify(query)}`);
+
     try {
+
         const db = client.db(dbName);
-        const collection = db.collection(collection);
-        
+        const collection = db.collection(collectionName);
+
         const data = await collection.find(query).toArray();
+
         const result = {
             ok: true,
             data: data
@@ -95,12 +105,12 @@ app.get('/database/:collection', async (req, res) => {
 
 app.post('/database/:collection', async (req, res) => {
     
-    const collection = req.params.collection;
+    const collectionName = req.params.collection;
     const query = req.query;
 
 
     console.log("post request to database recieved from", req.ip);
-    console.log(`for collection ${collection} with query args ${JSON.stringify(query)}`);
+    console.log(`for collection ${collectionName} with query args ${JSON.stringify(query)}`);
 
     // convert all datatypes in query
     // from str to their proper form
@@ -108,7 +118,7 @@ app.post('/database/:collection', async (req, res) => {
     try {
 
         const db = client.db(dbName);
-        const collection = db.collection(collection);
+        const collection = db.collection(collectionName);
         
         let data;
         let result;
@@ -141,7 +151,7 @@ app.post('/database/:collection', async (req, res) => {
 
 app.delete('/database/:collection', async (req, res) => {
     
-    const collection = req.params.collection;
+    const collectionName = req.params.collection;
     const deleteMany = req.query.deleteMany;
 
     delete req.query.deleteMany;
@@ -153,7 +163,7 @@ app.delete('/database/:collection', async (req, res) => {
     try {
         
         const db = client.db(dbName);
-        const collection = db.collection(collection);
+        const collection = db.collection(collectionName);
 
         let data;
         let result;
