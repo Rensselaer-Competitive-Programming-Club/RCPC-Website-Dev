@@ -23,18 +23,41 @@ function Text() {
  * is there a risk for reading??
 */
 
+function Achievement() {
+    return (
+        <form action="/admin" method="post">
+            <label for="event-name">  Event Name: </label>
+            <input type="text" id="event-name" name="event-name"/>
+            <br/>
+            <label for="photo">  Upload Photo: </label>
+            <input type="file" id="photo" name="photo" accept="image/*"/>
+            <br/>
+        </form>
+    );
+}
 
 function Form() {
+
     return <form action="/admin" method="post">
-        <label for="password">Enter the password here:</label><br />
+        <label htmlFor="password">Enter the password here:</label><br />
         <input type="password" id="password" name="password"></input>
     </form>
 }
 
 function Main() {
+    const [showAchievement, setShowAchievement] = React.useState(false)
+
     return <section>
         <Text />
         <Form />
+        <br/>
+
+        {/* TO BE MOVED TO ANOTHER FILE */}
+        <button onClick={() => {
+            setShowAchievement(!showAchievement)
+        }}>Achievement</button>
+
+        { showAchievement && <Achievement /> }
     </section>
 }
 
