@@ -2,43 +2,31 @@
 
 let problems = [
     {
-        name: "Problem Name Porblem neame",
-        rating: "1900",
-        description: "<b>Problem 1</b> Description",
+        name: "Drunken Maze",
+        rating: "1700",
+        description: "You are given a two-dimensional maze with a start and end position. Your task is to find the fastest way to get from the start to the end position. The fastest way is to make the minimum number of steps where one step is going left, right, up, or down. Of course, you cannot walk through walls. There is, however, a catch: If you make more than three steps in the same direction, you lose balance and fall down. Therefore, it is forbidden to make more than three consecutive steps in the same direction. It is okay to walk three times to the right, then one step to the left, and then again three steps to the right. This has the same effect as taking five steps to the right, but is slower.",
         inputDescription: "",
         outputDescription: "",
         examples: [
             {
-                input: "input data",
-                output: "output data"
+                input: "7 12\n############\n#S........T#\n#.########.#\n#..........#\n#..........#\n#..#..#....#\n############",
+                output: "15"
             },
             {
-                input: "input data 2",
-                output: "output data 2"
+                input: "5 8\n########\n#......#\n#.####.#\n#...T#S#\n########",
+                output: "14"
             },
             {
-                input: "input data 2",
-                output: "output data 2"
+                input: "5 8\n########\n#.#S...#\n#.####.#\n#...T#.#\n########\n",
+                output: "-1"
             },
-            {
-                input: "input data 2",
-                output: "output data 2"
-            },
-            {
-                input: "input data 2",
-                output: "output data 2"
-            },
-            {
-                input: "input data 2",
-                output: "output data 2"
-            }
         ]
     }, {
-        name: "Problem 2 name",
+        name: "Watermelon",
         rating: "800",
-        description: "short description",
-        inputDescription: "nothing",
-        outputDescription: "nothing",
+        description: "",
+        inputDescription: "",
+        outputDescription: "",
         examples: [
 
         ]
@@ -74,10 +62,10 @@ function ProblemBody() {
                         <h1 className="problem-examples-header">Problem Examples</h1>
                         <div className="problem-examples-text" readOnly>
                             {problems[selectedProblem].examples.map((example, index) => (
-                                <div readOnly>
-                                    <b>Input {index + 1}</b> <br />
+                                <div readOnly className="input-output">
+                                    <b className="input-output-bold">Input {index + 1}</b> <br />
                                     {example.input}<br />
-                                    <b>Output {index + 1}</b> <br />
+                                    <b className="input-output-bold">Output {index + 1}</b> <br />
                                     {example.output}<br />
                                     <br />
                                 </div>

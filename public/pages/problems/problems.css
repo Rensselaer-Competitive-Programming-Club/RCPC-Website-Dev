@@ -71,8 +71,23 @@
 
 .problem-description-text {
     height: 400px;
-    width: 600px;
+    width: 750px;
     resize: none;
+    font-size: x-large;
+}
+
+/*//////////////////////////////////////
+            Problem Description
+//////////////////////////////////////*/ 
+
+.input-output {
+    white-space: pre-line;
+    font-family: monospace;
+    font-size: x-large;
+}
+
+.input-output-bold {
+    font-size: xx-large;
 }
 
 /*//////////////////////////////////////
