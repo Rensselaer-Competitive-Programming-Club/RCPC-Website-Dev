@@ -27,13 +27,12 @@ function Achievement() {
 function Dashboard() {
     const [showAchievement, setShowAchievement] = React.useState(false)
 
-    return <main>Test
-        {/*
+    return <main>
         <button onClick={() => {
             setShowAchievement(!showAchievement)
         }}>Achievement</button>
 
-        { showAchievement && <Achievement /> }*/}
+        { showAchievement && <Achievement /> }
     </main>
 }
 
