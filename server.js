@@ -58,7 +58,7 @@ app.get('/', (req, res,) => {
 */
 
 app.get('/database/:collection', async (req, res) => {
-
+    
     const collectionName = req.params.collection;
     let query = req.query;
 
@@ -208,9 +208,11 @@ app.post('/admin', (req, res) => {
             if (hashedPassword == userInput) {
                 res.redirect('/admin/dashboard');
             } else {
-                res.status(401).json({              // Redirect back to the login page NEEDS TO BE IMPLEMENTED
-                    message: "Incorrect Password"
-                });
+                res.send(`
+                    <script>
+                        alert("Incorrect password.");
+                    </script>
+                `);
             }
         },
 
