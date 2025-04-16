@@ -229,7 +229,7 @@ app.post('/admin', (req, res) => {
 */
 app.get('/admin/dashboard', (req, res) => {
 
-    res.sendFile(path.join(__dirname, 'dashboard', 'index.html'));
+    res.sendFile(path.join(__dirname, 'public/admin/dashboard/', 'index.html'));
 });
 
 app.listen(port, () => {
