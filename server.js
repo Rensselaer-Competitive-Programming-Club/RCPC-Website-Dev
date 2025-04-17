@@ -281,17 +281,17 @@ app.get('/backend/:fileName/:functionName', async (req, res) => {
 /*
     Other Functions
 */
-
+// makes sure args is a json in the form JSON.stringify([arg1, arg2, arg3])
 function runPythonScript(scriptPath, functionName, args = []) {
     return new Promise((resolve, reject) => {
-        const python = spawn('python', [scriptPath, [functionName, ...args]]);
+        const python = spawn('python', [scriptPath, functionName, args]);
 
         let result = '';
         let error = '';
 
         // get output
         python.stdout.on('data', (data) => {
-            result += data.toString();
+            result += data.toString().trim();
         });
 
         // get errors
@@ -334,18 +334,18 @@ async function fetchSubmissions() {
     for(const handle of handles) {
         try {
             const response = await fetch(
-                `https://codeforces.com/api/user.status?handle=${handle}&from=1&count=2`
+                `https://codeforces.com/api/user.status?handle=${handle}&from=1&count=1`
             );
             const data = await response.json();
 
             if (data.status !== 'OK') {
                 throw new Error("Codeforces user.status API call failed");
             }
-    
-            const result = await runPythonScript("backend/database.py", "test");
+            const jsonData = JSON.stringify({ data: data });
+            const result = await runPythonScript("backend/database.py", "test", jsonData);
 
             if(result.ok) {
-                console.log(result.result);
+                console.log("resultsssss", result);
             } else {
                 throw new Error("result not ok on api call");
             }
