@@ -1,6 +1,7 @@
 // Import Frameworks + Modules
 const express = require('express')
 const path = require('path')
+const { spawn } = require('child_process');
 
 // instantiate mongo db obj
 require('dotenv').config(); // Load environment variables from a .env file (if you have one)
@@ -21,8 +22,7 @@ const app = express() // Creates Express Instance
 const port = 3000 // Define the Port
 
 /* database function imports */
-const { getPassword, closeMongo, 
-    postData, readData, deleteData } = require('./database.js');
+const { getPassword, postData, readData, deleteData } = require('./database.js');
 
 // /* closes db connection when server.js is closed */
 // process.on("SIGINT", async () => {
@@ -40,6 +40,10 @@ const { getPassword, closeMongo,
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // For parsing the html form in /admin
 app.use(express.static(path.join(__dirname, 'public')));
+
+function init() {
+    fetchSubmissions();
+}
 
 // Serve Static Starting Frontend
 app.get('/', (req, res,) => {
@@ -208,9 +212,11 @@ app.post('/admin', (req, res) => {
             if (hashedPassword == userInput) {
                 res.redirect('/admin/dashboard');
             } else {
-                res.status(401).json({              // Redirect back to the login page NEEDS TO BE IMPLEMENTED
-                    message: "Incorrect Password"
-                });
+                res.send(`
+                    <script>
+                        alert("Incorrect password.");
+                    </script>
+                `);
             }
         },
 
@@ -229,9 +235,126 @@ app.post('/admin', (req, res) => {
 */
 app.get('/admin/dashboard', (req, res) => {
 
-    res.sendFile(path.join(__dirname, 'dashboard', 'index.html'));
+    res.sendFile(path.join(__dirname, 'public/admin/dashboard/', 'index.html'));
 });
 
 app.listen(port, () => {
 	console.log('Listening on *:3000');
+
+    init();
 })
+
+/* /backend endpoint:
+ * used to python functions in the backend
+*/
+
+app.get('/backend/:fileName/:functionName', async (req, res) => {
+    const {fileName, functionName } = req.params;
+
+    // check for null
+    if(!fileName || !functionName) {
+        return res.status(400).json({ error: "Missing file name or function name in request" });
+    }
+
+    // check for invalid file name
+    if (!/^[\w\-]+$/.test(fileName)) {
+        return res.status(400).json({ error: 'Invalid filename' });
+    }
+
+    const scriptPath = path.join(__dirname, 'backend', `${fileName}.py`);
+
+    try {
+        // Call runPythonScript with the script path and function name as arguments
+        const { ok, result, error } = await runPythonScript(scriptPath, functionName);
+
+        if (ok) {
+            return res.json({ result });
+        } else {
+            return res.status(500).json({ error });
+        }
+    } catch (err) {
+        // Catch any unexpected errors
+        return res.status(500).json({ error: err.error || 'Unknown error occurred' });
+    }
+});
+
+/*
+    Other Functions
+*/
+// makes sure args is a json in the form JSON.stringify([arg1, arg2, arg3])
+function runPythonScript(scriptPath, functionName, args = []) {
+    return new Promise((resolve, reject) => {
+        const python = spawn('python', [scriptPath, functionName, args]);
+
+        let result = '';
+        let error = '';
+
+        // get output
+        python.stdout.on('data', (data) => {
+            result += data.toString().trim();
+        });
+
+        // get errors
+        python.stderr.on('data', (data) => {
+            error += data.toString();
+        });
+
+        // check that program exited properly
+        python.on('close', (code) => {
+            if (code !== 0 || error) {
+                return reject({
+                    ok: false,
+                    error: error || `Python script exited with code ${code}`,
+                });
+            }
+            resolve({ ok: true, result: result });
+        });
+    });
+}
+
+
+/* Codeforces API
+    makes api calls to update our member data on the database
+*/
+/*
+    Member Fields:
+    handle
+*/
+// this function continues to run while the server is live
+async function fetchSubmissions() {
+    // TODO: change this to get a list of user handles from the members collection in the db
+    const handles = [
+        "MPartridge",
+        "jacob528",
+        "CJMarino",
+        "togoya6259",
+        "sideoftomatoes"
+    ]
+
+    for(const handle of handles) {
+        try {
+            const response = await fetch(
+                `https://codeforces.com/api/user.status?handle=${handle}&from=1&count=1`
+            );
+            const data = await response.json();
+
+            if (data.status !== 'OK') {
+                throw new Error("Codeforces user.status API call failed");
+            }
+            const jsonData = JSON.stringify({ data: data });
+            const result = await runPythonScript("backend/database.py", "test", jsonData);
+
+            if(result.ok) {
+                console.log("resultsssss", result);
+            } else {
+                throw new Error("result not ok on api call");
+            }
+
+        } catch (error) {
+            console.log("Error while fetching submissions", error);
+        }
+        await new Promise(resolve => setTimeout(resolve, 2000));
+    }
+
+    fetchSubmissions();
+};
