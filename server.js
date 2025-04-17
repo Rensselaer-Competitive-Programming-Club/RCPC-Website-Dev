@@ -41,6 +41,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // For parsing the html form in /admin
 app.use(express.static(path.join(__dirname, 'public')));
 
+function init() {
+    fetchSubmissions();
+}
+
 // Serve Static Starting Frontend
 app.get('/', (req, res,) => {
     res.send(express.static('index.html'))
@@ -58,7 +62,7 @@ app.get('/', (req, res,) => {
 */
 
 app.get('/database/:collection', async (req, res) => {
-    
+
     const collectionName = req.params.collection;
     let query = req.query;
 
@@ -236,4 +240,72 @@ app.get('/admin/dashboard', (req, res) => {
 
 app.listen(port, () => {
 	console.log('Listening on *:3000');
+
+    init();
 })
+
+/* /backend endpoint:
+ * used to python functions in the backend
+*/
+
+app.get('/backend/:fileName/:functionName', (req, res) => {
+    const {fileName, functionName } = req.params;
+
+    // check for invalid file name
+    if (!/^[\w\-]+$/.test(fileName)) {
+        return res.status(400).json({ error: 'Invalid filename' });
+    }
+
+    const scriptPath = `backend/${fileName}.py`;
+    console.log(scriptPath);
+});
+
+/* Codeforces API
+    makes api calls to update our member data on the database
+*/
+/*
+    Member Fields:
+    handle
+*/
+// this function continues to run while the server is live
+async function fetchSubmissions() {
+    const data = await readData("problems", {});
+
+    if(data.ok) {
+        console.log(data);
+    }
+
+    const handles = [
+        "MPartridge",
+        "jacob528",
+        "CJMarino",
+        "togoya6259",
+        "sideoftomatoes"
+    ]
+
+    for(const handle of handles) {
+        try {
+          const response = await fetch(
+            `https://codeforces.com/api/user.status?handle=${handle}&from=1&count=1000`
+          );
+          const data = await response.json();
+    
+          if (data.status !== 'OK') {
+            //setOutput('Error: ' + data.comment);
+            return;
+          }
+    
+          const okSubmissions = data.result;
+          const problems = okSubmissions.map(sub => {
+            const p = sub.problem;
+            return `${p.contestId}${p.index} - ${p.name}`;
+          });
+          //setOutput(`${handle} 5 most recent solved problems:\n${problems.join('\n')}`);
+        } catch (err) {
+          //setOutput('Fetch error: ' + err.message);
+        }
+        await new Promise(resolve => setTimeout(resolve, 2000));
+    }
+
+    fetchSubmissions();
+};

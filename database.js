@@ -1,6 +1,19 @@
 
 
 /* caches vars for less getMongo() calls */
+require('dotenv').config(); // Load environment variables from a .env file (if you have one)
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const { error } = require('console');
+const dbUri = process.env.DB;
+const dbName = "rcpc-website-database";
+
+const client = new MongoClient(dbUri, {
+    serverApi: {
+        version: ServerApiVersion.v1,
+        strict: true,
+        deprecationErrors: true
+    }
+});
 let cachedClient = null;
 let cachedDB = null;
 
@@ -18,7 +31,6 @@ async function getMongo() {
 
         // else make the var and initialize cache
         } else {
-            const client = new MongoClient(dbUri);
             await client.connect();
             cachedClient = client;
             cachedDB = client.db(dbName);
@@ -128,10 +140,12 @@ async function findData(collectionName, query) {
 
         // preprocess query fields here
 
-        if (query.isActive == "true") {
-            query.isActive = true;
-        } else {
-            query.isActive = false;
+        if('isActive' in query) {
+            if (query.isActive == "true") {
+                query.isActive = true;
+            } else {
+                query.isActive = false;
+            }
         }
 
         var cursor = await collection.find(query);

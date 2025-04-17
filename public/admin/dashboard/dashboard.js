@@ -5,6 +5,8 @@ function Dashboard() {
     const [problems, setProblems] = React.useState("");
     const [output, setOutput] = React.useState("");
 
+    
+
     function Achievement() {
         return (
             <form action="/admin" method="post">
@@ -35,7 +37,7 @@ function Dashboard() {
         </div>
     }
 
-    function fetchProblems() {
+    const fetchProblems = () => {
         fetch('/database/problems?isActive=true')
              .then(response => response.json()) 
              .then(data => {
@@ -48,40 +50,20 @@ function Dashboard() {
              .catch(error => {
                  setProblems(`Error with the fetch request: ${error}`);
              });
-    }
+    };
 
-    const fetchSubmissions = async () => {
-        const handle = "MPartridge";
-        try {
-          const response = await fetch(
-            `https://codeforces.com/api/user.status?handle=${handle}&from=1&count=1000`
-          );
-          const data = await response.json();
-    
-          if (data.status !== 'OK') {
-            setOutput('Error: ' + data.comment);
-            return;
-          }
-    
-          const okSubmissions = data.result.filter(sub => sub.verdict === 'OK');
-          const problems = okSubmissions.slice(0, 5).map(sub => {
-            const p = sub.problem;
-            return `${p.contestId}${p.index} - ${p.name}`;
-          });
-    
-          setOutput(`${handle} 5 most recent solved problems:\n${problems.join('\n')}`);
-        } catch (err) {
-          setOutput('Fetch error: ' + err.message);
-        }
-      };
+    const test = () => {
+        fetch('/backend/leaderboard/test');
+    };
+
 
     React.useEffect(() => {
         fetchProblems();
-        fetchSubmissions();
+        test();
     }, []);
 
     return <main>
-        <textarea value={output}></textarea>
+        <textarea value={problems}></textarea>
     </main>
 }
 
