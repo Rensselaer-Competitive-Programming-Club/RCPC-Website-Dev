@@ -281,10 +281,19 @@ app.get('/backend/:fileName/:functionName', async (req, res) => {
 /*
     Other Functions
 */
-// makes sure args is a json in the form JSON.stringify([arg1, arg2, arg3])
 function runPythonScript(scriptPath, functionName, args = []) {
     return new Promise((resolve, reject) => {
-        const python = spawn('python', [scriptPath, functionName, args]);
+
+        const serializedArgs = args.map(arg => {
+            // If arg is an object, serialize it to a JSON string
+            if (typeof arg === 'object') {
+                return JSON.stringify(arg);
+            }
+            // If arg is not an object, keep it as it is (no serialization needed)
+            return arg;
+        });
+
+        const python = spawn('python', [scriptPath, functionName, ...serializedArgs]);
 
         let result = '';
         let error = '';
@@ -296,7 +305,7 @@ function runPythonScript(scriptPath, functionName, args = []) {
 
         // get errors
         python.stderr.on('data', (data) => {
-            error += data.toString();
+            error += data.toString().trim();
         });
 
         // check that program exited properly
@@ -316,13 +325,11 @@ function runPythonScript(scriptPath, functionName, args = []) {
 /* Codeforces API
     makes api calls to update our member data on the database
 */
-/*
-    Member Fields:
-    handle
-*/
+
 // this function continues to run while the server is live
 async function fetchSubmissions() {
     // TODO: change this to get a list of user handles from the members collection in the db
+    // TODO: make this function take in a problem id as input
     const handles = [
         "MPartridge",
         "jacob528",
@@ -331,30 +338,22 @@ async function fetchSubmissions() {
         "sideoftomatoes"
     ]
 
-    for(const handle of handles) {
-        try {
-            const response = await fetch(
-                `https://codeforces.com/api/user.status?handle=${handle}&from=1&count=1`
-            );
-            const data = await response.json();
+    /*
+        fetch all submissions and store them in a list [{handle, submissions}]
+        call a python function which takes the list, and a problem number to go through each user and get the earliest time they solved the problem
+        python function prints to console in order of who solved problem first
+            1st handle
+            2nd handle
+            etc
 
-            if (data.status !== 'OK') {
-                throw new Error("Codeforces user.status API call failed");
-            }
-            const jsonData = JSON.stringify({ data: data });
-            const result = await runPythonScript("backend/database.py", "test", jsonData);
+    */
 
-            if(result.ok) {
-                console.log("resultsssss", result);
-            } else {
-                throw new Error("result not ok on api call");
-            }
-
-        } catch (error) {
-            console.log("Error while fetching submissions", error);
-        }
-        await new Promise(resolve => setTimeout(resolve, 2000));
-    }
-
-    fetchSubmissions();
+    runPythonScript("backend/leaderboard.py", "getOKSubmissions", [ "2A", handles ]).then(response => {
+        // Handle the success response
+        console.log(response);
+      })
+      .catch(error => {
+        // Handle the error response
+        console.error("Error running the Python script:", error);
+      });
 };
