@@ -1,92 +1,29 @@
-
-
-/* caches vars for less getMongo() calls */
-require('dotenv').config(); // Load environment variables from a .env file (if you have one)
-const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-const { error } = require('console');
-const dbUri = process.env.DB;
 const dbName = "rcpc-website-database";
-
-const client = new MongoClient(dbUri, {
-    serverApi: {
-        version: ServerApiVersion.v1,
-        strict: true,
-        deprecationErrors: true
-    }
-});
-let cachedClient = null;
-let cachedDB = null;
-
-/* makeMongoClient()
- * initializes a new instance of a mongo client
- * call this every time you want to do a db query
- * is async, so needs proper handling
-*/
-async function getMongo() {
-    try {
-
-        // checks if cache already exists
-        if(cachedDB) {
-            return cachedDB;
-
-        // else make the var and initialize cache
-        } else {
-            await client.connect();
-            cachedClient = client;
-            cachedDB = client.db(dbName);
-            console.log("Successfully opened mongo connection");
-        }
-
-    // if an error happens when connecting to the DB,
-    // it gets routed here
-    } catch (error) {
-        console.error("Error connecting to MongoDB:", error);
-        cachedClient = null;
-        cachedDB = null;
-        throw error; // re-throw error for the calling function to handle
-    }
-}
-
-/* closeMongo()
- * checks if cached objs are active
- * if so, closes their connections
- * called by server.js when the program is interrupted/closed
-*/ 
-async function closeMongo() {
-
-    if (cachedClient) {
-        await cachedClient.close();
-        cachedClient = null;
-        cachedDB = null;
-    }
-
-    console.log("Successfully closed mongo connection.");
-
-}
 
 /* insertData(collectionName, data)
  * collectionName and data are query args
  * insertData initializes a mongo db, and 
  * inserts data into the specified collection
-*/ 
-async function insertData(collectionName, data) {
+*/
+/**
+ * 
+ * @param {MongoClient} client - The MongoDB Client
+ * @param {string} collectionName -  
+ * @param {*} data 
+ * @returns 
+ */
+async function insertData(client, collectionName, data) {
+    
+    // verifies correctness of the program
+    if (collectionName == null || data == null) {
+        throw new Error("One or more arguments of insertData is null");
+    }
 
     try {
+        // load collection
+        const db = client.db(dbName);
+        const collection = db.collection(collectionName);
 
-        // verifies correctness of the program
-        if (collectionName == null || data == null) {
-            throw new Error("One or more arguments of insertData is null");
-        }
-
-        let db = cachedDB;
-        if (db == null) {
-            await getMongo();
-            db = cachedDB;
-        }
-
-        var collection = db.collection(collectionName);
-        let result;
-        
         // { data is an array } => use insert many
         if (Array.isArray(data)) { 
             result = await collection.insertMany(data);
@@ -115,23 +52,18 @@ async function insertData(collectionName, data) {
  * 
  * 
 */
-async function findData(collectionName, query) {
+async function findData(client, collectionName, query) {
 
-    try {
-
-        // verifies correctness of the program
-        if (collectionName == null || query == null) {
-            throw new Error("One or more arguments of insertData is null");
-        }
+    // verifies correctness of the program
+    if (collectionName == null || query == null) {
+        throw new Error("One or more arguments of insertData is null");
+    }
     
-
-        let db = cachedDB;
-        if (db == null) {
-            await getMongo();
-            db = cachedDB;
-        }
-
+    try {
+        const db = client.db(dbName);
         const collection = db.collection(collectionName);
+
+        const data = await collection.find(query).toArray();
 
         // might be a good idea to send a special message if nothing is found
         // or if an error is caused by the query, like an invalidKey argument
@@ -156,7 +88,6 @@ async function findData(collectionName, query) {
             data: result
         };
 
-
     } catch(error) {
         console.error(`Error finding data for collection "${collectionName}":`, error);
         return {
@@ -170,7 +101,7 @@ async function findData(collectionName, query) {
  *
  * 
 */
-async function updateData(collection, data) {
+async function updateData(client, collection, data) {
 
 }
 
@@ -178,7 +109,7 @@ async function updateData(collection, data) {
  *
  *
 */
-async function deleteData(collection, data) {
+async function deleteData(client, collection, data) {
 
 } 
 
@@ -193,14 +124,8 @@ async function fetchAdminPassword() {
     */
 
     try {
-        let db = cachedDB;
-        if (db == null) {
-            await getMongo();
-        }
-
         console.log("get password called");
         return "password";
-
     } catch(error) {
         console.log("error in fetchAdmin");
         return false;
@@ -209,7 +134,6 @@ async function fetchAdminPassword() {
 
 module.exports = {
     getPassword: fetchAdminPassword,
-    closeMongo: closeMongo,
     readData: findData,
     postData: insertData,
     deleteData: deleteData 

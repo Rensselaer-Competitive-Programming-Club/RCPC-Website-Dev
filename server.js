@@ -21,8 +21,7 @@ const app = express() // Creates Express Instance
 const port = 3000 // Define the Port
 
 /* database function imports */
-const { getPassword, closeMongo, 
-    postData, readData, deleteData } = require('./database.js');
+const { getPassword, postData, readData, deleteData } = require('./database.js');
 
 // /* closes db connection when server.js is closed */
 // process.on("SIGINT", async () => {
@@ -287,7 +286,7 @@ app.get('/backend/:fileName/:functionName', (req, res) => {
 */
 // this function continues to run while the server is live
 async function fetchSubmissions() {
-    const data = await readData("problems", {});
+    const data = await readData(client, "problems", {});
 
     if(data.ok) {
         console.log(data);
