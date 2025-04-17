@@ -256,8 +256,26 @@ app.get('/backend/:fileName/:functionName', (req, res) => {
         return res.status(400).json({ error: 'Invalid filename' });
     }
 
-    const scriptPath = `backend/${fileName}.py`;
-    console.log(scriptPath);
+    const scriptPath = path.join(__dirname, 'backend', `${fileName}`.py);
+
+    const python = spawn('python', [scriptPath, functionName]);
+
+    let result = '';
+    python.stdout.on('data', (data) => {
+        result += data.toString();
+    });
+
+    let error = '';
+    python.stderr.on('data', (data) => {
+        error += data.toString();
+    });
+
+    python.on('close', (code) => {
+        if (code !== 0 || error) {
+            return res.status(500).json({ error: error || `Exited with code ${code}` });
+        }
+        return res.json({ result });
+    });
 });
 
 /* Codeforces API
