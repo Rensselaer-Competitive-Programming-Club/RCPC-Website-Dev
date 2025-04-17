@@ -5,7 +5,46 @@ function Dashboard() {
     const [problems, setProblems] = React.useState("");
     const [output, setOutput] = React.useState("");
 
-    
+    function Leaderboard() {
+        const [OKSubmissions, setOKSubmissions] = React.useState([]);
+        const [problemID, setProblemID] = React.useState("");
+        const [showRefresh, setShowRefresh] = React.useState(true);
+
+        const handles = [
+            "MPartridge",
+            "jacob528",
+            "CJMarino",
+            "togoya6259",
+            "sideoftomatoes",
+            "gaviche",
+            "lukeyam"
+        ]
+
+        const getOKSubmissions = () => {
+            fetch('/backend/leaderboard/getOKSubmissions?args[]=' + problemID + '&args[]=' + encodeURIComponent(JSON.stringify(handles)))
+                .then(res => res.json())
+                .then(data => {;
+                    setOKSubmissions(data.result ? data.result.split(" ") : []);
+                });
+        };
+
+
+        return (
+            <div>
+                <input type="text" value={problemID} onChange={(e) => {
+                    setProblemID(e.target.value);
+                    }} placeholder="Enter problem id"></input>
+                    <button disabled={!showRefresh} onClick={() => {
+                        setShowRefresh(false);
+                        getOKSubmissions();
+                        setTimeout(() => setShowRefresh(true), handles.length * 2000);
+                    }}>refresh</button>
+                {OKSubmissions.map((submission, index) => (
+                    <h1 key={index}>{submission}</h1>  // Render each handle and submission
+                ))}
+            </div>
+        );
+    }
 
     function Achievement() {
         return (
@@ -52,18 +91,13 @@ function Dashboard() {
              });
     };
 
-    const test = () => {
-        fetch('/backend/leaderboard/test');
-    };
 
 
     React.useEffect(() => {
-        fetchProblems();
-        test();
     }, []);
 
     return <main>
-        <textarea value={problems}></textarea>
+        <Leaderboard/>
     </main>
 }
 
