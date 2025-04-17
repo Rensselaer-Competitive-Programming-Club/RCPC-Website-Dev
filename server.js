@@ -250,6 +250,7 @@ app.listen(port, () => {
 
 app.get('/backend/:fileName/:functionName', async (req, res) => {
     const {fileName, functionName } = req.params;
+    const { args = [] } = req.query;
 
     // check for null
     if(!fileName || !functionName) {
@@ -265,7 +266,7 @@ app.get('/backend/:fileName/:functionName', async (req, res) => {
 
     try {
         // Call runPythonScript with the script path and function name as arguments
-        const { ok, result, error } = await runPythonScript(scriptPath, functionName);
+        const { ok, result, error } = await runPythonScript(scriptPath, functionName, args);
 
         if (ok) {
             return res.json({ result });
@@ -293,7 +294,7 @@ function runPythonScript(scriptPath, functionName, args = []) {
             return arg;
         });
 
-        const python = spawn('python', [scriptPath, functionName, ...serializedArgs]);
+        const python = spawn('python', [scriptPath, functionName, ...args]);
 
         let result = '';
         let error = '';
@@ -330,13 +331,7 @@ function runPythonScript(scriptPath, functionName, args = []) {
 async function fetchSubmissions() {
     // TODO: change this to get a list of user handles from the members collection in the db
     // TODO: make this function take in a problem id as input
-    const handles = [
-        "MPartridge",
-        "jacob528",
-        "CJMarino",
-        "togoya6259",
-        "sideoftomatoes"
-    ]
+    
 
     /*
         fetch all submissions and store them in a list [{handle, submissions}]
@@ -348,12 +343,12 @@ async function fetchSubmissions() {
 
     */
 
-    runPythonScript("backend/leaderboard.py", "getOKSubmissions", [ "2A", handles ]).then(response => {
-        // Handle the success response
-        console.log(response);
-      })
-      .catch(error => {
-        // Handle the error response
-        console.error("Error running the Python script:", error);
-      });
+    // runPythonScript("backend/leaderboard.py", "getOKSubmissions", [ "2A", handles ]).then(response => {
+    //     // Handle the success response
+    //     console.log(response);
+    //   })
+    //   .catch(error => {
+    //     // Handle the error response
+    //     console.error("Error running the Python script:", error);
+    //   });
 };
