@@ -1,6 +1,7 @@
 // Import Frameworks + Modules
 const express = require('express')
 const path = require('path')
+const { spawn } = require('child_process');
 
 // instantiate mongo db obj
 require('dotenv').config(); // Load environment variables from a .env file (if you have one)
@@ -247,35 +248,70 @@ app.listen(port, () => {
  * used to python functions in the backend
 */
 
-app.get('/backend/:fileName/:functionName', (req, res) => {
+app.get('/backend/:fileName/:functionName', async (req, res) => {
     const {fileName, functionName } = req.params;
+
+    // check for null
+    if(!fileName || !functionName) {
+        return res.status(400).json({ error: "Missing file name or function name in request" });
+    }
 
     // check for invalid file name
     if (!/^[\w\-]+$/.test(fileName)) {
         return res.status(400).json({ error: 'Invalid filename' });
     }
 
-    const scriptPath = path.join(__dirname, 'backend', `${fileName}`.py);
+    const scriptPath = path.join(__dirname, 'backend', `${fileName}.py`);
 
-    const python = spawn('python', [scriptPath, functionName]);
+    try {
+        // Call runPythonScript with the script path and function name as arguments
+        const { ok, result, error } = await runPythonScript(scriptPath, functionName);
 
-    let result = '';
-    python.stdout.on('data', (data) => {
-        result += data.toString();
-    });
-
-    let error = '';
-    python.stderr.on('data', (data) => {
-        error += data.toString();
-    });
-
-    python.on('close', (code) => {
-        if (code !== 0 || error) {
-            return res.status(500).json({ error: error || `Exited with code ${code}` });
+        if (ok) {
+            return res.json({ result });
+        } else {
+            return res.status(500).json({ error });
         }
-        return res.json({ result });
-    });
+    } catch (err) {
+        // Catch any unexpected errors
+        return res.status(500).json({ error: err.error || 'Unknown error occurred' });
+    }
 });
+
+/*
+    Other Functions
+*/
+
+function runPythonScript(scriptPath, functionName, args = []) {
+    return new Promise((resolve, reject) => {
+        const python = spawn('python', [scriptPath, [functionName, ...args]]);
+
+        let result = '';
+        let error = '';
+
+        // get output
+        python.stdout.on('data', (data) => {
+            result += data.toString();
+        });
+
+        // get errors
+        python.stderr.on('data', (data) => {
+            error += data.toString();
+        });
+
+        // check that program exited properly
+        python.on('close', (code) => {
+            if (code !== 0 || error) {
+                return reject({
+                    ok: false,
+                    error: error || `Python script exited with code ${code}`,
+                });
+            }
+            resolve({ ok: true, result: result });
+        });
+    });
+}
+
 
 /* Codeforces API
     makes api calls to update our member data on the database
@@ -286,12 +322,7 @@ app.get('/backend/:fileName/:functionName', (req, res) => {
 */
 // this function continues to run while the server is live
 async function fetchSubmissions() {
-    const data = await readData(client, "problems", {});
-
-    if(data.ok) {
-        console.log(data);
-    }
-
+    // TODO: change this to get a list of user handles from the members collection in the db
     const handles = [
         "MPartridge",
         "jacob528",
@@ -302,24 +333,25 @@ async function fetchSubmissions() {
 
     for(const handle of handles) {
         try {
-          const response = await fetch(
-            `https://codeforces.com/api/user.status?handle=${handle}&from=1&count=1000`
-          );
-          const data = await response.json();
+            const response = await fetch(
+                `https://codeforces.com/api/user.status?handle=${handle}&from=1&count=2`
+            );
+            const data = await response.json();
+
+            if (data.status !== 'OK') {
+                throw new Error("Codeforces user.status API call failed");
+            }
     
-          if (data.status !== 'OK') {
-            //setOutput('Error: ' + data.comment);
-            return;
-          }
-    
-          const okSubmissions = data.result;
-          const problems = okSubmissions.map(sub => {
-            const p = sub.problem;
-            return `${p.contestId}${p.index} - ${p.name}`;
-          });
-          //setOutput(`${handle} 5 most recent solved problems:\n${problems.join('\n')}`);
-        } catch (err) {
-          //setOutput('Fetch error: ' + err.message);
+            const result = await runPythonScript("backend/database.py", "test");
+
+            if(result.ok) {
+                console.log(result.result);
+            } else {
+                throw new Error("result not ok on api call");
+            }
+
+        } catch (error) {
+            console.log("Error while fetching submissions", error);
         }
         await new Promise(resolve => setTimeout(resolve, 2000));
     }
