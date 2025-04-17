@@ -1,25 +1,24 @@
+const { MongoClient } = require("mongodb");
+
 const dbName = "rcpc-website-database";
 
-/* insertData(collectionName, data)
- * collectionName and data are query args
- * insertData initializes a mongo db, and 
- * inserts data into the specified collection
-*/
 /**
+ * Attempts to insert the given data to the database collection
  * 
  * @param {MongoClient} client - The MongoDB Client
- * @param {string} collectionName -  
- * @param {*} data 
- * @returns 
+ * @param {string} collectionName - The name of the collection to insert into 
+ * @param {Object|Object[]} data - The data to insert into the collection. Can be one document or multiple 
+ * @returns {Promise<Boolean>} - Resolves to "true" if data was succesfully inserted into collection
+ * @throws {Error} - Throws an error if any argument is null, if data is of invalid type, or if inserting fails
  */
-async function insertData(client, collectionName, data) {
-    
-    // verifies correctness of the program
-    if (collectionName == null || data == null) {
-        throw new Error("One or more arguments of insertData is null");
-    }
-
+async function insertData (client, collectionName, data) {
+    // try to insert
     try {
+        // make sure arguments are not null
+        if (!collectionName || !data || !client) {
+            throw new Error("One or more arguments of insertData is null");
+        }
+
         // load collection
         const db = client.db(dbName);
         const collection = db.collection(collectionName);
@@ -48,27 +47,28 @@ async function insertData(client, collectionName, data) {
     }
 }
 
-/* findData(collection, data)
+/**
+ * Attempts to find data in the given collection with the given query
  * 
- * 
-*/
+ * @param {MongoClient} client - The MongoDB Client 
+ * @param {string} collectionName - The name of the collection to find data in
+ * @param {Object} query - query to filter data with
+ * @returns {Promise<{ ok: true, data: any[] } | { ok: false, error: any }>} - Resolves to json object with field
+ * "ok". If "ok" is true then there is another field "data" which contains the data found in the collection, if "ok" is "false"
+ * there is another field "error" which is the error that occured
+ * @throws {Error} - Throws an error if any arguments are null, or if finding the collection was unsuccessful
+ */
 async function findData(client, collectionName, query) {
-
-    // verifies correctness of the program
-    if (collectionName == null || query == null) {
-        throw new Error("One or more arguments of insertData is null");
-    }
-    
+    // try to find
     try {
+        // make sure args are not null
+        if (!client || !collectionName || !query) {
+            throw new Error("One or more arguments of insertData is null");
+        }
+
+        // load collection
         const db = client.db(dbName);
         const collection = db.collection(collectionName);
-
-        const data = await collection.find(query).toArray();
-
-        // might be a good idea to send a special message if nothing is found
-        // or if an error is caused by the query, like an invalidKey argument
-        //          ^^^^ this is possible with a schema ^^^^
-
 
         // preprocess query fields here
 
@@ -80,12 +80,13 @@ async function findData(client, collectionName, query) {
             }
         }
 
-        var cursor = await collection.find(query);
-        var result = await cursor.toArray();
+        // get data from the collection
+        const data = await collection.find(query).toArray();
 
+        // return data
         return {
             ok: true,
-            data: result
+            data: data
         };
 
     } catch(error) {
@@ -97,27 +98,50 @@ async function findData(client, collectionName, query) {
     }
 }
 
-/* updateData(collection, data)
- *
+/**
+ * Attempts to update data in the given collection with the given data, query, and options
  * 
-*/
-async function updateData(client, collection, data) {
+ * @param {MongoClient} client - The MongoDB client
+ * @param {string} collection - The collection to update
+ * @param {Object} query - The query to filter with
+ * @param {Object} data - The update to make to filtered items 
+ * @param {Object} [options] - Optional MongoDB options
+ * @returns {Promise<{ ok: boolean, result?: any, error?: any }>} - Resolves to object with field "ok" which is true if any
+ * data was updated, and false if not. "result" is an optional field which is the entries which were updated. "error" is an
+ * optional field with any errors that were thrown
+ * @throws {Error} - 
+ */
+async function updateData(client, collection, query, data, options = {}) {
+    // TODO
+    try {
 
+    } catch(error) {
+
+    }
 }
 
-/* deleteData(collection, data)
- *
- *
-*/
-async function deleteData(client, collection, data) {
-
+/**
+ * Attempts to delete data from the collection with the given query
+ * 
+ * @param {MongoClient} client - The MongoDB Client 
+ * @param {string} collection - The collection to delete from
+ * @param {Object} query - the query to filter with
+ * @returns {Promise<{ ok: boolean, result?: any[], error?: any }>} - Resolves to object with field "ok" which is true if
+ * any amount of data was deleted. "result" is all entries that were deleted, "error" is any errors that occurred
+ * @throws {Error} - 
+ */
+async function deleteData(client, collection, query) {
+    // TODO
 } 
 
-
-
+/**
+ * Returns the admin login password
+ * 
+ * @returns {Promise<string>} - Resolves to a string which is the admin login password
+ */
 async function fetchAdminPassword() {
     
-    /*
+    /* TODO
      * 1. initialize database obj
      * 2. make sql query for admin password
      * 3. return admin password
