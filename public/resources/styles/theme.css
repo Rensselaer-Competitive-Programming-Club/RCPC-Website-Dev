@@ -9,7 +9,14 @@
     --dark-color: #756D54;      /* Coyote */
     --black-color: #3C0000;     /* Black Bean */
     --white-color: #FCFCFC;     /* White */
+    --fontA: myFirstFont;
 }
+
+@font-face {
+    font-family: myFirstFont;
+    src: url(circular_std_black.woff);
+  }
+  
 
 header {
     background-color: var(--white-color);
