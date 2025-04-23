@@ -15,26 +15,25 @@ const client = new MongoClient(uri, {
         version: ServerApiVersion.v1,
         strict: true,
         deprecationErrors: true
-    }
+    },
+    // tlsAllowInvalidCertificates: true,
+    tls: true // Important for Atlas
 });
+(async () => {
+    try {
+        await client.connect();
+        console.log("Connected to client!");
+    } catch (err) {
+        console.error("Failed to connect to client:", err);
+    }
+})();
+
 
 const app = express() // Creates Express Instance
 const port = 3000 // Define the Port
 
 /* database function imports */
 const { getPassword, postData, readData, deleteData } = require('./database.js');
-
-// /* closes db connection when server.js is closed */
-// process.on("SIGINT", async () => {
-//     await closeMongo();
-//     console.log("Closing program.");
-//     process.exit(0);
-// });
-// process.on("SIGTERM", async () => {
-//     await closeMongo();
-//     console.log("Closing program.");
-//     process.exit(0);
-// });
 
 // Middleware
 app.use(express.json());
