@@ -4,6 +4,19 @@ require('dotenv').config(); // Load required sensitive variables from the .env f
 const express = require('express')
 const path = require('path')
 const { spawn } = require('child_process');
+const cors = require('cors');
+
+const allowedOrigins = ['https://rcpc-9s3f.onrender.com'];
+
+const corsOptions = {
+    origin: function (origin, callback) {
+        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+};
 
 // Import Custom Functions
 const { getPassword, postData, readData, deleteData } = require('./database.js');
@@ -38,6 +51,7 @@ const port = 3000 // Define the Port
 
 // Middleware
 app.use(express.json());
+app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: true })); // For parsing the html form in /admin
 app.use(express.static(path.join(__dirname, 'public')));
 
