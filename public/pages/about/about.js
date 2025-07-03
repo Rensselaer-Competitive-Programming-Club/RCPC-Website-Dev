@@ -35,7 +35,7 @@ function MeetTheTeam() {
     useEffect(() => {
         async function fetchTeamMembers() {
             try {
-                const response = await fetch('http://localhost:3000/database/directors?isActive=true');
+                const response = await fetch('/database/directors?isActive=true');
                 if (!response.ok) {
                     throw new Error(`HTTP Error! Status ${response.status}`);
                 }

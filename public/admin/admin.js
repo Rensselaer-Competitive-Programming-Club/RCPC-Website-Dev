@@ -23,18 +23,20 @@ function Text() {
  * is there a risk for reading??
 */
 
-
 function Form() {
+
     return <form action="/admin" method="post">
-        <label for="password">Enter the password here:</label><br />
+        <label htmlFor="password">Enter the password here:</label><br />
         <input type="password" id="password" name="password"></input>
     </form>
 }
 
 function Main() {
+
     return <section>
         <Text />
         <Form />
+        <br/>
     </section>
 }
 
