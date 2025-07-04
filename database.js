@@ -1,80 +1,28 @@
+const { MongoClient } = require("mongodb");
 
+const dbName = "rcpc-website-database";
 
-/* caches vars for less getMongo() calls */
-let cachedClient = null;
-let cachedDB = null;
-
-/* makeMongoClient()
- * initializes a new instance of a mongo client
- * call this every time you want to do a db query
- * is async, so needs proper handling
-*/
-async function getMongo() {
+/**
+ * Attempts to insert the given data to the database collection
+ * 
+ * @param {MongoClient} client - The MongoDB Client
+ * @param {string} collectionName - The name of the collection to insert into 
+ * @param {Object|Object[]} data - The data to insert into the collection. Can be one document or multiple 
+ * @returns {Promise<Boolean>} - Resolves to "true" if data was succesfully inserted into collection
+ * @throws {Error} - Throws an error if any argument is null, if data is of invalid type, or if inserting fails
+ */
+async function insertData (client, collectionName, data) {
+    // try to insert
     try {
-
-        // checks if cache already exists
-        if(cachedDB) {
-            return cachedDB;
-
-        // else make the var and initialize cache
-        } else {
-            const client = new MongoClient(dbUri);
-            await client.connect();
-            cachedClient = client;
-            cachedDB = client.db(dbName);
-            console.log("Successfully opened mongo connection");
-        }
-
-    // if an error happens when connecting to the DB,
-    // it gets routed here
-    } catch (error) {
-        console.error("Error connecting to MongoDB:", error);
-        cachedClient = null;
-        cachedDB = null;
-        throw error; // re-throw error for the calling function to handle
-    }
-}
-
-/* closeMongo()
- * checks if cached objs are active
- * if so, closes their connections
- * called by server.js when the program is interrupted/closed
-*/ 
-async function closeMongo() {
-
-    if (cachedClient) {
-        await cachedClient.close();
-        cachedClient = null;
-        cachedDB = null;
-    }
-
-    console.log("Successfully closed mongo connection.");
-
-}
-
-/* insertData(collectionName, data)
- * collectionName and data are query args
- * insertData initializes a mongo db, and 
- * inserts data into the specified collection
-*/ 
-async function insertData(collectionName, data) {
-
-    try {
-
-        // verifies correctness of the program
-        if (collectionName == null || data == null) {
+        // make sure arguments are not null
+        if (!collectionName || !data || !client) {
             throw new Error("One or more arguments of insertData is null");
         }
 
-        let db = cachedDB;
-        if (db == null) {
-            await getMongo();
-            db = cachedDB;
-        }
+        // load collection
+        const db = client.db(dbName);
+        const collection = db.collection(collectionName);
 
-        var collection = db.collection(collectionName);
-        let result;
-        
         // { data is an array } => use insert many
         if (Array.isArray(data)) { 
             result = await collection.insertMany(data);
@@ -99,49 +47,47 @@ async function insertData(collectionName, data) {
     }
 }
 
-/* findData(collection, data)
+/**
+ * Attempts to find data in the given collection with the given query
  * 
- * 
-*/
-async function findData(collectionName, query) {
-
+ * @param {MongoClient} client - The MongoDB Client 
+ * @param {string} collectionName - The name of the collection to find data in
+ * @param {Object} query - query to filter data with
+ * @returns {Promise<{ ok: true, data: any[] } | { ok: false, error: any }>} - Resolves to json object with field
+ * "ok". If "ok" is true then there is another field "data" which contains the data found in the collection, if "ok" is "false"
+ * there is another field "error" which is the error that occured
+ * @throws {Error} - Throws an error if any arguments are null, or if finding the collection was unsuccessful
+ */
+async function findData(client, collectionName, query) {
+    // try to find
     try {
-
-        // verifies correctness of the program
-        if (collectionName == null || query == null) {
+        // make sure args are not null
+        if (!client || !collectionName || !query) {
             throw new Error("One or more arguments of insertData is null");
         }
-    
 
-        let db = cachedDB;
-        if (db == null) {
-            await getMongo();
-            db = cachedDB;
-        }
-
+        // load collection
+        const db = client.db(dbName);
         const collection = db.collection(collectionName);
-
-        // might be a good idea to send a special message if nothing is found
-        // or if an error is caused by the query, like an invalidKey argument
-        //          ^^^^ this is possible with a schema ^^^^
-
 
         // preprocess query fields here
 
-        if (query.isActive == "true") {
-            query.isActive = true;
-        } else {
-            query.isActive = false;
+        if('isActive' in query) {
+            if (query.isActive == "true") {
+                query.isActive = true;
+            } else {
+                query.isActive = false;
+            }
         }
 
-        var cursor = await collection.find(query);
-        var result = await cursor.toArray();
+        // get data from the collection
+        const data = await collection.find(query).toArray();
 
+        // return data
         return {
             ok: true,
-            data: result
+            data: data
         };
-
 
     } catch(error) {
         console.error(`Error finding data for collection "${collectionName}":`, error);
@@ -152,41 +98,58 @@ async function findData(collectionName, query) {
     }
 }
 
-/* updateData(collection, data)
- *
+/**
+ * Attempts to update data in the given collection with the given data, query, and options
  * 
-*/
-async function updateData(collection, data) {
+ * @param {MongoClient} client - The MongoDB client
+ * @param {string} collection - The collection to update
+ * @param {Object} query - The query to filter with
+ * @param {Object} data - The update to make to filtered items 
+ * @param {Object} [options] - Optional MongoDB options
+ * @returns {Promise<{ ok: boolean, result?: any, error?: any }>} - Resolves to object with field "ok" which is true if any
+ * data was updated, and false if not. "result" is an optional field which is the entries which were updated. "error" is an
+ * optional field with any errors that were thrown
+ * @throws {Error} - 
+ */
+async function updateData(client, collection, query, data, options = {}) {
+    // TODO
+    try {
 
+    } catch(error) {
+
+    }
 }
 
-/* deleteData(collection, data)
- *
- *
-*/
-async function deleteData(collection, data) {
-
+/**
+ * Attempts to delete data from the collection with the given query
+ * 
+ * @param {MongoClient} client - The MongoDB Client 
+ * @param {string} collection - The collection to delete from
+ * @param {Object} query - the query to filter with
+ * @returns {Promise<{ ok: boolean, result?: any[], error?: any }>} - Resolves to object with field "ok" which is true if
+ * any amount of data was deleted. "result" is all entries that were deleted, "error" is any errors that occurred
+ * @throws {Error} - 
+ */
+async function deleteData(client, collection, query) {
+    // TODO
 } 
 
-
-
+/**
+ * Returns the admin login password
+ * 
+ * @returns {Promise<string>} - Resolves to a string which is the admin login password
+ */
 async function fetchAdminPassword() {
     
-    /*
+    /* TODO
      * 1. initialize database obj
      * 2. make sql query for admin password
      * 3. return admin password
     */
 
     try {
-        let db = cachedDB;
-        if (db == null) {
-            await getMongo();
-        }
-
         console.log("get password called");
         return "password";
-
     } catch(error) {
         console.log("error in fetchAdmin");
         return false;
@@ -195,7 +158,6 @@ async function fetchAdminPassword() {
 
 module.exports = {
     getPassword: fetchAdminPassword,
-    closeMongo: closeMongo,
     readData: findData,
     postData: insertData,
     deleteData: deleteData 

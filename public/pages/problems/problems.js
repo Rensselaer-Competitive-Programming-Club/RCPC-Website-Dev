@@ -2,7 +2,7 @@
 
 let problems = [
     {
-        name: "Problem 1",
+        name: "Problem Name Porblem neame",
         rating: "1900",
         description: "<b>Problem 1</b> Description",
         inputDescription: "",
@@ -33,7 +33,16 @@ let problems = [
                 output: "output data 2"
             }
         ]
-    },
+    }, {
+        name: "Problem 2 name",
+        rating: "800",
+        description: "short description",
+        inputDescription: "nothing",
+        outputDescription: "nothing",
+        examples: [
+
+        ]
+    }
 ]
 
 function VerticalLine() {
@@ -45,35 +54,40 @@ function VerticalLine() {
 function ProblemBody() {
     const [ selectedProblem, setSelectedProblem ] = React.useState(0);
     return (
-        <main className="problem-body">
-            <div className="problem-buttons">
-                {problems.map((problem, index) => (
-                    <button className="problem-button" key={index} onClick={() => { setSelectedProblem(index); }}>
-                        {problem.name} <br/><br/> Rating - {problem.rating}
-                    </button>
-                ))}
-            </div>
-            <VerticalLine></VerticalLine>
-            <div className="problem-description-div">
-                <h1 className="problem-description-header">Problem Description</h1>
-                <div className="problem-description-text" readOnly dangerouslySetInnerHTML={{__html: problems[selectedProblem].description }} />
-            </div>
-            <VerticalLine></VerticalLine>
-            <div className="problem-examples-div">
-                <h1 className="problem-examples-header">Problem Examples</h1>
-                <div className="problem-examples-text" readOnly>
-                    {problems[selectedProblem].examples.map((example, index) => (
-                        <div readOnly>
-                            <b>Input {index + 1}</b> <br />
-                            {example.input}<br />
-                            <b>Output {index + 1}</b> <br />
-                            {example.output}<br />
-                            <br />
+        <main>
+            <div className="problem-body-container">
+                <div className="problem-body">
+                    <div className="problem-buttons">
+                        {problems.map((problem, index) => (
+                            <button className="problem-button" key={index} onClick={() => { setSelectedProblem(index); }}>
+                                {problem.name} <br/><br/> Rating - {problem.rating}
+                            </button>
+                        ))}
+                    </div>
+                    <VerticalLine></VerticalLine>
+                    <div className="problem-description-div">
+                        <h1 className="problem-description-header">Problem Description</h1>
+                        <div className="problem-description-text" readOnly dangerouslySetInnerHTML={{__html: problems[selectedProblem].description }} />
+                    </div>
+                    <VerticalLine></VerticalLine>
+                    <div className="problem-examples-div">
+                        <h1 className="problem-examples-header">Problem Examples</h1>
+                        <div className="problem-examples-text" readOnly>
+                            {problems[selectedProblem].examples.map((example, index) => (
+                                <div readOnly>
+                                    <b>Input {index + 1}</b> <br />
+                                    {example.input}<br />
+                                    <b>Output {index + 1}</b> <br />
+                                    {example.output}<br />
+                                    <br />
+                                </div>
+                            ))}
                         </div>
-                    ))}
+                    </div>
                 </div>
             </div>
         </main>
+        
     );
 }
 
