@@ -35,18 +35,19 @@ function MeetTheTeam() {
     useEffect(() => {
         async function fetchTeamMembers() {
             try {
-                const response = await fetch('/database/directors?isActive=true');
+                const response = await fetch('/api/directors');
                 if (!response.ok) {
                     throw new Error(`HTTP Error! Status ${response.status}`);
                 }
-
-                const board = await response.json();
-                const persons = board.data.map(member => ({
+                
+                let board = (await response.json()).data;
+                board = board.filter(officer => officer.isActive == true);
+                board = board.map(member => ({
                     src: imagePath + member["rcs"] + ".png",
                     name: member["name"],
                     title: member["role"]
                 }));
-                setMembers(persons);
+                setMembers(board);
                 setLoading(false);
             } catch(error) {
                 setError(error.message);

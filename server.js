@@ -60,6 +60,7 @@ app.get('/', (req, res,) => {
     res.send(express.static('index.html'))
 })
 
+
 app.listen(port, () => {
 	console.log('Listening on *:3000');
 
@@ -77,6 +78,23 @@ app.listen(port, () => {
  *  - query args: key/value pairs used for querying the collection
 */
 
+app.get('/api/directors', async (_, res) => {
+    try {
+        const db = client.db(dbName);
+        const collection = db.collection('directors');
+        const data = await collection.find().toArray();
+        res.status(200).json({
+            ok: true,
+            data: data
+        });
+    } catch(error) {
+        res.status(500).json({
+            ok: false,
+            error: error
+        });
+    }
+});
+/*
 app.get('/database/:collection', async (req, res) => {
 
     const collectionName = req.params.collection;
@@ -208,6 +226,8 @@ app.delete('/database/:collection', async (req, res) => {
     }
     
 });
+*/
+
 
 /* /admin endpoint:
  * lets client verify as admin
@@ -253,6 +273,7 @@ app.get('/admin/dashboard', (req, res) => {
  * used to python functions in the backend
 */
 
+/*
 app.get('/backend/:fileName/:functionName', async (req, res) => {
     const {fileName, functionName } = req.params;
     const { args = [] } = req.query;
@@ -283,10 +304,12 @@ app.get('/backend/:fileName/:functionName', async (req, res) => {
         return res.status(500).json({ error: err.error || 'Unknown error occurred' });
     }
 });
+*/
 
 /*
     Other Functions
 */
+/*
 function runPythonScript(scriptPath, functionName, args = []) {
     return new Promise((resolve, reject) => {
 
@@ -326,7 +349,7 @@ function runPythonScript(scriptPath, functionName, args = []) {
         });
     });
 }
-
+*/
 function init() {
     fetchSubmissions();
 }
@@ -359,4 +382,4 @@ async function fetchSubmissions() {
     //     // Handle the error response
     //     console.error("Error running the Python script:", error);
     //   });
-};
+}; 
