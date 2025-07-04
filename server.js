@@ -194,6 +194,52 @@ app.delete('/database/:collection', async (req, res) => {
     
 });
 
+// FE calls this to get leaderboard data
+app.get('/api/leaderboard/', async (_, res) => {
+    try {
+        const db = client.db(dbName);
+        const collection = db.collection('leaderboard');
+        const result = await collection.find().toArray();
+        return res.status(200).json({data: result});
+    } catch(error) {
+        return res.status(500).json({error: 'Internal server error'});
+    }
+});
+
+// can get 1 user instead of all; not very useful but why not
+app.get('/api/leaderboard/:id', async (req, res) => {
+    try {
+        if (req.params.id == undefined) {
+            return res.status(400).json({error: 'id parameter was not supplied'});
+        }
+        const query = { _id: new ObjectId(req.params.id)}
+        const db = client.db(dbName);
+        const collection = db.collection('leaderboard');
+        const result = await collection.findOne(query).toArray();
+        return res.status(200).json({data: result});
+    } catch(error) {
+        return res.status(500).json({error: 'Internal server error'});
+    }
+});
+
+// adds someone's stats to the leaderboard collection
+app.post('/api/leaderboard', async (req, res) => {
+    try {
+        if(!validateLeaderboardPost(req.body)) {
+            return res.status(400).json({error: 'Form content did not validate'});
+        }
+
+        const db = client.db(dbName);
+        const collection = db.collection('leaderboard');
+        const result = collection.insert(req.body);
+        return res.status(200).json(result);
+
+    } catch(error) {
+        return res.status(500).json({error: 'Internal server error'})
+    }
+});
+
+
 /* /admin endpoint:
  * lets client verify as admin
  * successful authentication redirects to admin dashboard
