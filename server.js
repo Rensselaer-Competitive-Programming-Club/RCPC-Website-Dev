@@ -240,6 +240,28 @@ app.post('/api/leaderboard', async (req, res) => {
     }
 });
 
+app.get('/api/leaderboard/update', async (req, res => {
+    try {
+        /* steps for updating the leaderboard
+         * 1. get the current challenge from mongo/website
+         * 2. get the list of leaderboard users from mongo/leaderboard
+         * 3. api call to codeforces for each user; need their global ranking and a list of all problems solved
+         * 4. api call to codeforces for each problem solved per user.
+         * 5. user data includes ranking info; can build global leaderboard stats directly
+         * 6. problem data per user is filtered by the current challenge via tags
+         * 7. construct challenge leaderboard stats with filtered problem data
+        */
+
+        const db = client.db(dbName);
+        const collection = db.collection('leaderboard');
+        const result = collection.find();
+
+
+    } catch(error) {
+
+    }
+}));
+
 
 /* /admin endpoint:
  * lets client verify as admin
