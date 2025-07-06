@@ -92,8 +92,8 @@ function MeetTheTeam() {
        first row of directors are the internally-facing positions: Logisitics, Finance, Resources (maybe changed to Education?)
        second row of directors are the externally-facing positions: Sponsorship, Marketing, Technology (tech is external bc rcos?)
     */
-    var directors1 = directors.filter(member => !member.name.includes("Heman") && !member.name.includes("Jacob"));
-    var directors2 = directors.filter(member => member.name.includes("Heman") || member.name.includes("Jacob"));
+    var directorsInternal = directors.filter(member => member.title.includes("Finance") || member.title.includes("Logistics") || member.title.includes("Resources"));
+    var directorsExternal = directors.filter(member => member.title.includes("Marketing") || member.title.includes("Sponsorship") || member.title.includes("Technology"));
 
 
     /* builds the div with the parsed mongo data */
@@ -106,16 +106,16 @@ function MeetTheTeam() {
             ))}
         </div>
 
-        {/*inserts directors1 items into page*/}
+        {/*inserts directorsInternal data into page as card objects*/}
         <div className="card-container">
-            {directors1.map((person, index) => (
+            {directorsInternal.map((person, index) => (
                 <Card key={index + 3} {...person} />
             ))}
         </div>
 
-        {/*inserts directors2 items into page*/}
+        {/*inserts external directors data into page as card objects*/}
         <div className="card-container">
-            {directors2.map((person, index) => (
+            {directorsExternal.map((person, index) => (
                 <Card key={index + 3} {...person} />
             ))}
         </div>
