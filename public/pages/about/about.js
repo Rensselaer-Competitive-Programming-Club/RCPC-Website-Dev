@@ -41,21 +41,25 @@ function MeetTheTeam() {
     useEffect(() => { // the (() => {}) syntax means this function will run immediately
         async function fetchTeamMembers() {
             try {
-                const response = await fetch('/database/directors?isActive=true'); // db call done here
+                const response = await fetch('/api/directors');
+
                 if (!response.ok) {
                     throw new Error(`HTTP Error! Status ${response.status}`); // result of bad response; implies error state is true
                 }
                 
+                let board = (await response.json()).data;
+                board = board.filter(officer => officer.isActive == true);
+                board = board.map(member => ({
                 // reaching here in execution means no errors
                 // pull team data from the response object
-                const board = await response.json();
-                const persons = board.data.map(member => ({
                     src: imagePath + member["rcs"] + ".png",
                     name: member["name"],
                     title: member["role"]
                 }));
+
                 // set the members state and remove loading state
-                setMembers(persons);
+                setMembers(board);
+              
                 setLoading(false);
             } catch(error) {
                 // catch is triggered by an error (from !response.ok or otherwise)
