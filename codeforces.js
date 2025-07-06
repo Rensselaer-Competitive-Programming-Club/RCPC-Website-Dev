@@ -1,57 +1,33 @@
-// api documentation: https://codeforces.com/apiHelp
-const { getPassword, closeMongo, 
-    postData, readData, deleteData } = require('./database.js');
-
-async function addUserToLeaderboards(user) {
-    const handle = user.handle;
-    const anon = user.anon;
-    try {
-        await authenticateUserHandle(handle);
-        await postData('leaderboardUsers', {handle: handle, anon: anon});
-        await updateLeaderboards();
-        return {success:true, };
-    } catch(error) {
-        return {success: false, error: error};
-    }
-    
+async function getProfiles(users) {
+    const allUserHandlesSemicolonSeparated = (users.map(user => user.handle)).join(';');
+    return await fetch(`https://codeforces.com/api/user.info?handles=${allUserHandlesSemicolonSeparated}&checkHistoricHandles=false`);
 }
 
-async function updateLeaderboards() {
-    try{
-        const users = await getLeaderboardUsers();
-        const currentChallenge = await getCurrentChallenge();
-
-        const solvedProblems = await getUserProblems(users);
-        const solvedChallenges = {};
-        Object.keys(solvedProblems).forEach((user, solvedProblems) => {
-            solvedChallenges[user] = solvedProblems.filter(problem => problem.type == currentChallenge);
-        });
-
-        await updateGlobalLeaderboard(solvedProblems);
-        await updateChallengeLeaderboard(solvedChallenges);
-
-        return {success: true};
-    } catch(error) {
-        return {success: false, error: error};
-    }
+async function getProblems(profile, filter) {
+    return await fetch(`https://codeforces.com/api/user.status?handle=${profile.handle}&from=1`);
 }
 
-async function getLeaderboardUsers() {
-    throw new Error('function not implemented');
-}
+async function getChallengeScore()
 
-async function setChallengeLeaderboardTag(tag) {
-    throw new Error('function not implemented');
-}
+function calculateChallengeScore(problems) {
 
-async function getUserProblems(filterTag = null) {
-    throw new Error('function not implemented');
-}
+    let score = 0;
+    problems.forEach(element => {
+        const rating = problems.rating;
+        const attempts = problems.submissionCount;
+        const elapsedTime = problems.submissionTime;
+        
+        const averageTimeConstant = 45;
+        const timePenaltyFactor = 3;
+        const timePenalty = timePenaltyFactor * (elapsedTime - averageTimeConstant);
+        
+        const attemptPenaltyFactor = 50;
+        const attemptPenalty = attempts * attemptPenaltyFactor;
+        
+        const problemDifficultyBonus = rating ** 1.002;
 
-async function updateGlobalLeaderboard() {
-    throw new Error('function not implemented');
-}
-
-async function updateChallengeLeaderboard(){
-    throw new Error('function not implemented');
+        const challengeScore = rating - timePenalty - attemptPenalty + problemDifficultyBonus;
+        score += challengeScore;
+    });
+    return score;
 }

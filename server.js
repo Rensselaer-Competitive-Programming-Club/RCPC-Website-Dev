@@ -240,7 +240,8 @@ app.post('/api/leaderboard', async (req, res) => {
     }
 });
 
-app.get('/api/leaderboard/update', async (req, res => {
+import * as codeforces from './codeforces.js';
+app.get('/api/leaderboard/update', async (_, res) => {
     try {
         /* steps for updating the leaderboard
          * 1. get the current challenge from mongo/website
@@ -253,14 +254,38 @@ app.get('/api/leaderboard/update', async (req, res => {
         */
 
         const db = client.db(dbName);
-        const collection = db.collection('leaderboard');
-        const result = collection.find();
+        let collection = db.collection('website');
+        const currentChallenge = collection.find().toArray();
+        collection = db.collection('leaderboard');
+        const members = await collection.find().toArray();
+        const cfProfiles = await codeforces.getProfiles(members);
+        const userToProblemArray = await codeforces.getProblems(cfProfiles, filter=currentChallenge);
 
+        const statUpdates = members.map(member => {
+            const profile = cfProfiles.find(profile => profile.handle == member.handle);
+            const problems = userToProblemArray.find(user => user.handle == member.handle);
+            
+            const filter = {_id: member._id};
+            const query = {set: {
+                    globalRank: profile.rank,
+                    globalRating: profile.rating,
+                    challengeScore: codeforces.getTotalChallengeScore(problems)
+                }
+            };
+            return {
+                updateOne: {
+                    filter, query
+                }
+            };
+        });
 
+        collection = db.collection('leaderboard');
+        await collection.bulkWrite(statUpdates);
+        return res.status(200).json({success: true});
     } catch(error) {
-
+        return res.status(500).json({success: false, error: error});
     }
-}));
+});
 
 
 /* /admin endpoint:
