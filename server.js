@@ -5,9 +5,6 @@ const express = require('express')
 const path = require('path')
 const { spawn } = require('child_process');
 
-// Import Custom Functions
-const { getPassword, postData, readData, deleteData } = require('./database.js');
-
 // Initialize MongoDB Client and Connect to it
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const { error } = require('console');
