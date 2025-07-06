@@ -6,7 +6,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <title>RCPC Website - About</title>
-
+        
+        <!--stylesheets are a fuck-around-and-find-out type of thing-->
         <link rel="stylesheet" href="/resources/styles/styles.css">
         <link rel="stylesheet" href="./about.css">
         <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
@@ -16,12 +17,17 @@
     </head>
 
     <body>
+        <!--Header tag renders the header component-->
         <header><p></p></header>
-
+        
+        <!--main tag is where the Main function from about.js roots itself into; 
+        when called, Main() will 'consume' the main tag and replace it with what it returns-->
         <main></main>
 
+        <!--footer tag renders the footer component-->
         <footer><p></p></footer>
 
+        <!--scripts are also a fuck-around-and-find-out type of thing-->
         <script src="/resources/components/header.js" type="text/babel"></script>
         <script src="/resources/components/footer.js" type="text/babel"></script>
         <script src="./about.js" type="text/babel"></script>
