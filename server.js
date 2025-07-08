@@ -4,10 +4,13 @@ require('dotenv').config(); // Load required sensitive variables from the .env f
 const express = require('express')
 const path = require('path')
 const { spawn } = require('child_process');
+
+// security imports
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
 
 const allowedOrigins = ['https://rcpc-9s3f.onrender.com'];
-
 const corsOptions = {
     origin: function (origin, callback) {
         if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
@@ -49,6 +52,7 @@ const port = 3000 // Define the Port
 // Middleware
 app.use(express.json());
 app.use(cors(corsOptions));
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true })); // For parsing the html form in /admin
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -92,31 +96,40 @@ app.get('/api/directors', async (_, res) => {
     }
 });
 
-app.post('/admin', (req, res) => {
+app.get('/api/me', async (req, res) => {
+    const token = req.cookies.token;
+    if (!token) return res.status(200).json({user: null});
     
-    const userInput = req.body.password; // gets user input
-    getPassword().then(
+    try {
+        const payload = jwt.verify(token, process.env.JWT_SECRET);
+        res.status(200).json({user: payload});
+    } catch(error) {
+        res.status(200).json({user: null});
+    }
+});
 
-        (hashedPassword) => {
-            if (hashedPassword == userInput) {
-                res.redirect('/admin/dashboard');
-            } else {
-                res.send(`
-                    <script>
-                        alert("Incorrect password.");
-                    </script>
-                `);
-            }
-        },
-
-        (failure) => {
-            console.log("could not resolve promise", failure);
-            res.status(500).json({
-                message: "An error occurred while connecting to the database.",
-                error: failure
-            });
+app.post('/api/login', async (req, res) => {
+    const user = req.body;
+    try {
+        if (!(await validateLogin(user))) {
+            return res.status(400).json({error: 'bad login'});
         }
-    )
+
+        const token = jwt.sign(
+            {username: user.username, role: 'admin'}, 
+            process.env.JWT_SECRET, {expiresIn: '1h'});
+        
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'Strict',
+            maxAge: 60 * 60 * 1000
+        });
+
+        res.status(200).json({success: true});
+    } catch(error) {
+        return res.status(500).json({success: false, error: error});
+    }
 });
 
 /* /admin/dashboard endpoint:
