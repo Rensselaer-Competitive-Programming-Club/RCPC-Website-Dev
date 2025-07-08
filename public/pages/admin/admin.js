@@ -25,9 +25,10 @@ function Text() {
 
 function Form() {
 
-    return <form action="/admin" method="post">
+    return <form action="/api/login" method="post">
         <label htmlFor="password">Enter the password here:</label><br />
         <input type="password" id="password" name="password"></input>
+        <button type="submit">Login</button>
     </form>
 }
 
